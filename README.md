@@ -271,7 +271,7 @@ As imagens de produtos são utilizadas apenas para fins educacionais.
 
 **Ubirajara Kimonos** — *"Senhor da Lança"* 🪶  
 
-*Oss *
+*Oss 👊🏿 *
 
 `HTML` · `CSS Grid` · `JavaScript` · `PHP` · `MySQL`
 
