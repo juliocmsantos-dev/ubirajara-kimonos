@@ -53,7 +53,7 @@ Ele não é atleta profissional. Não compete. Chega cansado do trabalho, às ve
 
 > *"Você não precisa ser faixa preta para respeitar o tatame. Você só precisa aparecer."*
 
-O Homer Simpson **carrega esse simbolismo**: o respeito, a humildade, a constância e a alegria de fazer parte de uma arte marcial — mesmo sendo, a seus próprios olhos, apenas um cara comum.
+O Homer Simpson **carrega esse simbolismo**: o respeito, a humildade, a constância e a alegria de fazer parte de uma arte marcial — mesmo sendo, a seus próprios olhos, apenas um cara comum. (Interpretação Pessoal minha)
 
 ---
 
