@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finalizar Compra — Ubirajara Kimonos</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* ============================================================
+       ESTILOS EXCLUSIVOS DO CHECKOUT
+       ============================================================ */
+
+    /* ----------------------------------------------------------
+       LAYOUT PRINCIPAL: CSS Grid
+       Coluna larga = formulários de dados
+       Coluna estreita = resumo do pedido
+       ---------------------------------------------------------- */
+    .pagina-checkout {
+      display: grid;
+      grid-template-columns: 1fr 340px; /* Formulários | Resumo lateral */
+      grid-template-areas: "formularios resumo-checkout"; /* Áreas nomeadas */
+      gap: 24px;
+      margin: 24px 0 48px;
+      align-items: start; /* Alinha ao topo */
+    }
+
+    /* Coluna de formulários (esquerda) */
+    .col-formularios {
+      grid-area: formularios;
+      display: flex;
+      flex-direction: column; /* Empilha as seções verticalmente */
+      gap: 24px;
+    }
+
+    /* Coluna de resumo (direita) */
+    .col-resumo {
+      grid-area: resumo-checkout;
+    }
+
+    /* ----------------------------------------------------------
+       SEÇÃO DO FORMULÁRIO (caixa com título + campos)
+       ---------------------------------------------------------- */
+    .secao-form {
+      background: var(--branco);
+      border: 1px solid #e8e8e8;
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--sombra);
+    }
+    .secao-form h2 {
+      font-family: var(--fonte-titulo);
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--preto);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 2px solid var(--cinza-claro);
+      padding-bottom: 12px;
+      text-transform: uppercase;
+    }
+    .secao-form h2 i { color: var(--vermelho); }
+
+    /* ----------------------------------------------------------
+       GRID DE FORMULÁRIO DE ENDEREÇO: 2 colunas
+       Usa grid-template-areas para organizar os campos
+       ---------------------------------------------------------- */
+    .form-endereco {
+      display: grid;
+      grid-template-columns: 1fr 1fr;      /* Duas colunas */
+      grid-template-areas:                  /* Posição de cada campo */
+        "cep         cep"
+        "rua         numero-r"
+        "bairro      cidade"
+        "estado      complemento";
+      gap: 0 20px; /* Espaço só entre colunas */
+    }
+    /* Atribuindo cada campo à sua área */
+    .campo-cep         { grid-area: cep; }
+    .campo-rua         { grid-area: rua; }
+    .campo-numero-r    { grid-area: numero-r; }
+    .campo-bairro      { grid-area: bairro; }
+    .campo-cidade      { grid-area: cidade; }
+    .campo-estado      { grid-area: estado; }
+    .campo-complemento { grid-area: complemento; }
+
+    /* ----------------------------------------------------------
+       TABS DE PAGAMENTO (Cartão | Boleto | PIX)
+       ---------------------------------------------------------- */
+    .payment-tabs {
+      display: flex;
+      border: 1.5px solid #ddd;
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .payment-tab {
+      flex: 1; /* Cada tab ocupa um terço */
+      padding: 12px 8px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--cinza-claro);
+      color: var(--cinza-medio);
+      border: none;
+      font-family: var(--fonte);
+      border-right: 1px solid #ddd;
+      transition: all var(--transicao);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .payment-tab:last-child { border-right: none; }
+    .payment-tab.ativo {
+      background: var(--vermelho); /* Tab ativa em vermelho */
+      color: var(--branco);
+    }
+
+    /* Painéis de conteúdo de cada método de pagamento */
+    .payment-panel { display: none; } /* Oculto por padrão */
+    .payment-panel.ativo { display: block; } /* Visível quando ativo */
+
+    /* ----------------------------------------------------------
+       GRID DE CARTÃO DE CRÉDITO: 2 colunas
+       ---------------------------------------------------------- */
+    .form-cartao {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+        "num-cartao  num-cartao"  /* Número ocupa as 2 colunas */
+        "nome-cartao nome-cartao" /* Nome também */
+        "validade    cvv"         /* Validade | CVV lado a lado */
+        "parcelas    parcelas";   /* Parcelas ocupa as 2 colunas */
+      gap: 0 20px;
+    }
+    .campo-num-cartao  { grid-area: num-cartao; }
+    .campo-nome-cartao { grid-area: nome-cartao; }
+    .campo-validade    { grid-area: validade; }
+    .campo-cvv         { grid-area: cvv; }
+    .campo-parcelas    { grid-area: parcelas; }
+
+    /* ----------------------------------------------------------
+       RESUMO LATERAL DO CHECKOUT
+       ---------------------------------------------------------- */
+    .resumo-checkout-box {
+      background: var(--branco);
+      border: 1px solid #e8e8e8;
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--sombra);
+      position: sticky; /* Fica fixo ao rolar */
+      top: 85px;
+    }
+    .resumo-checkout-box h3 {
+      font-family: var(--fonte-titulo);
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--preto);
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--cinza-claro);
+      padding-bottom: 10px;
+    }
+
+    /* Item no resumo lateral */
+    .resumo-item {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .resumo-item-img {
+      width: 56px;
+      height: 56px;
+      border: 1px solid #eee;
+      border-radius: var(--radius);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .resumo-item-img img { width: 100%; height: 100%; object-fit: contain; }
+    .resumo-item-info .nome  { font-size: 12px; font-weight: 700; color: var(--cinza-escuro); }
+    .resumo-item-info .detalhe { font-size: 11px; color: var(--cinza-medio); }
+    .resumo-item-preco { font-size: 14px; font-weight: 900; color: var(--preto); margin-left: auto; white-space: nowrap; }
+
+    /* Linhas de valores */
+    .resumo-val {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 8px;
+      color: var(--cinza-medio);
+    }
+    .resumo-val strong { color: var(--preto); }
+    /* Linha do total */
+    .resumo-val-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 2px solid var(--cinza-claro);
+      padding-top: 12px;
+      margin: 8px 0 16px;
+    }
+    .resumo-val-total span:first-child { font-size: 15px; font-weight: 700; }
+    .total-final {
+      font-size: 24px;
+      font-weight: 900;
+      font-family: var(--fonte-titulo);
+      color: var(--preto);
+    }
+
+    /* Campo de cupom */
+    .campo-cupom {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .campo-cupom input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1.5px dashed var(--vermelho);
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-family: var(--fonte);
+      background: #fff5f5;
+      outline: none;
+      color: var(--cinza-escuro);
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-logo">
+    <img src="img/homer.png" alt="Ubirajara Kimonos">
+  </div>
+  <div class="header-busca">
+    <input type="text" placeholder="O que você procura?">
+    <button><i class="fa fa-search"></i></button>
+  </div>
+  <div class="header-atendimento">
+    <a href="#"><i class="fa fa-headset"></i> Atendimento</a>
+    <a href="#"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+    <span class="header-bem-vindo">Bem-vindo a Ubirajara Kimonos</span>
+  </div>
+  <div class="header-icones">
+    <a href="ficha_cliente.html">
+      <i class="fa fa-user"></i>
+      <span class="label">Conta</span>
+    </a>
+    <a href="carrinho.html">
+      <i class="fa fa-shopping-cart"></i>
+      <span class="badge" id="badge-carrinho">0</span>
+      <span class="label">Carrinho</span>
+    </a>
+  </div>
+</header>
+
+<nav class="site-nav">
+  <a href="index.html">Início</a>
+  <a href="carrinho.html"><i class="fa fa-arrow-left"></i> Voltar ao Carrinho</a>
+</nav>
+
+<div class="container">
+
+  <!-- Trilha de navegação -->
+  <ul class="breadcrumb">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="carrinho.html">Carrinho</a></li>
+    <li><span>Finalizar Compra</span></li>
+  </ul>
+
+  <!--
+    ================================================================
+    FORMULÁRIO PRINCIPAL — Envia dados para o PHP via POST
+    action="processa_pedido.php" = arquivo que recebe os dados
+    method="POST" = método seguro (dados não aparecem na URL)
+    ================================================================
+  -->
+  <form action="processa_pedido.php" method="POST" id="form-checkout" onsubmit="return prepararEnvio()">
+
+    <!-- GRID DO CHECKOUT -->
+    <div class="pagina-checkout">
+
+      <!-- COLUNA ESQUERDA: formulários -->
+      <div class="col-formularios">
+
+        <!-- ======================================================
+             DADOS PESSOAIS DO COMPRADOR
+             ====================================================== -->
+        <div class="secao-form">
+          <h2><i class="fa fa-user"></i> Dados Pessoais</h2>
+
+          <!-- Grid de 2 colunas para nome e sobrenome -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 20px;">
+            <div class="form-group">
+              <label for="nome">Nome *</label>
+              <input type="text" id="nome" name="nome" placeholder="Seu nome" required>
+            </div>
+            <div class="form-group">
+              <label for="sobrenome">Sobrenome *</label>
+              <input type="text" id="sobrenome" name="sobrenome" placeholder="Seu sobrenome" required>
+            </div>
+          </div>
+
+          <!-- Grid de 2 colunas para email e telefone -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 20px;">
+            <div class="form-group">
+              <label for="email">E-mail *</label>
+              <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+            </div>
+            <div class="form-group">
+              <label for="telefone">Telefone *</label>
+              <input type="tel" id="telefone" name="telefone" placeholder="(11) 99999-9999" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="cpf">CPF *</label>
+            <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" maxlength="14" required>
+          </div>
+        </div>
+
+        <!-- ======================================================
+             ENDEREÇO DE ENTREGA
+             ====================================================== -->
+        <div class="secao-form">
+          <h2><i class="fa fa-map-marker-alt"></i> Endereço de Entrega</h2>
+
+          <!-- Grid com grid-template-areas para organizar os campos -->
+          <div class="form-endereco">
+            <div class="form-group campo-cep">
+              <label for="cep">CEP *</label>
+              <input type="text" id="cep" name="cep" placeholder="00000-000" maxlength="9" required
+                     onblur="buscarCEP()"> <!-- Busca endereço ao sair do campo -->
+            </div>
+            <div class="form-group campo-rua">
+              <label for="rua">Rua / Avenida *</label>
+              <input type="text" id="rua" name="rua" placeholder="Nome da rua" required>
+            </div>
+            <div class="form-group campo-numero-r">
+              <label for="numero_end">Número *</label>
+              <input type="text" id="numero_end" name="numero_end" placeholder="123" required>
+            </div>
+            <div class="form-group campo-bairro">
+              <label for="bairro">Bairro *</label>
+              <input type="text" id="bairro" name="bairro" placeholder="Seu bairro" required>
+            </div>
+            <div class="form-group campo-cidade">
+              <label for="cidade">Cidade *</label>
+              <input type="text" id="cidade" name="cidade" placeholder="Sua cidade" required>
+            </div>
+            <div class="form-group campo-estado">
+              <label for="estado">Estado *</label>
+              <select id="estado" name="estado" required>
+                <option value="">Selecione...</option>
+                <option value="AC">Acre</option>
+                <option value="AL">Alagoas</option>
+                <option value="AM">Amazonas</option>
+                <option value="BA">Bahia</option>
+                <option value="CE">Ceará</option>
+                <option value="DF">Distrito Federal</option>
+                <option value="ES">Espírito Santo</option>
+                <option value="GO">Goiás</option>
+                <option value="MA">Maranhão</option>
+                <option value="MG">Minas Gerais</option>
+                <option value="MS">Mato Grosso do Sul</option>
+                <option value="MT">Mato Grosso</option>
+                <option value="PA">Pará</option>
+                <option value="PB">Paraíba</option>
+                <option value="PE">Pernambuco</option>
+                <option value="PI">Piauí</option>
+                <option value="PR">Paraná</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="RN">Rio Grande do Norte</option>
+                <option value="RO">Rondônia</option>
+                <option value="RR">Roraima</option>
+                <option value="RS">Rio Grande do Sul</option>
+                <option value="SC">Santa Catarina</option>
+                <option value="SE">Sergipe</option>
+                <option value="SP" selected>São Paulo</option>
+                <option value="TO">Tocantins</option>
+              </select>
+            </div>
+            <div class="form-group campo-complemento">
+              <label for="complemento">Complemento</label>
+              <input type="text" id="complemento" name="complemento" placeholder="Apto, bloco...">
+            </div>
+          </div>
+        </div>
+
+        <!-- ======================================================
+             FORMA DE PAGAMENTO — Tabs (Cartão | Boleto | PIX)
+             ====================================================== -->
+        <div class="secao-form">
+          <h2><i class="fa fa-credit-card"></i> Forma de Pagamento</h2>
+
+          <!-- Tabs de seleção -->
+          <div class="payment-tabs">
+            <button type="button" class="payment-tab ativo"
+                    onclick="selecionarPagamento('cartao', this)">
+              <i class="fa fa-credit-card"></i> Cartão de Crédito
+            </button>
+            <button type="button" class="payment-tab"
+                    onclick="selecionarPagamento('boleto', this)">
+              <i class="fa fa-barcode"></i> Boleto
+            </button>
+            <button type="button" class="payment-tab"
+                    onclick="selecionarPagamento('pix', this)">
+              <i class="fa fa-qrcode"></i> PIX
+            </button>
+          </div>
+
+          <!-- PAINEL: Cartão de Crédito -->
+          <div id="panel-cartao" class="payment-panel ativo">
+            <div class="form-cartao">
+              <div class="form-group campo-num-cartao">
+                <label for="card_numero">Número do Cartão</label>
+                <input type="text" id="card_numero" name="card_numero"
+                       placeholder="0000 0000 0000 0000" maxlength="19"
+                       oninput="formatarCartao(this)"> <!-- Formata ao digitar -->
+              </div>
+              <div class="form-group campo-nome-cartao">
+                <label for="card_nome">Nome no Cartão</label>
+                <input type="text" id="card_nome" name="card_nome"
+                       placeholder="NOME COMO NO CARTÃO" style="text-transform:uppercase;">
+              </div>
+              <div class="form-group campo-validade">
+                <label for="card_validade">Validade</label>
+                <input type="text" id="card_validade" name="card_validade"
+                       placeholder="MM/AA" maxlength="5" oninput="formatarValidade(this)">
+              </div>
+              <div class="form-group campo-cvv">
+                <label for="card_cvv">CVV</label>
+                <input type="text" id="card_cvv" name="card_cvv"
+                       placeholder="000" maxlength="4">
+              </div>
+              <div class="form-group campo-parcelas">
+                <label for="parcelas">Parcelas</label>
+                <select id="parcelas" name="parcelas">
+                  <!-- As opções serão preenchidas pelo JavaScript conforme o total -->
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- PAINEL: Boleto Bancário -->
+          <div id="panel-boleto" class="payment-panel">
+            <div class="alerta alerta-info">
+              <i class="fa fa-barcode fa-2x"></i>
+              <div>
+                <strong>Boleto Bancário — 5% de desconto!</strong><br>
+                <small>O boleto será gerado após a confirmação. Prazo de pagamento: 3 dias úteis.</small><br>
+                <span style="font-size:15px;color:var(--verde);">
+                  Total com desconto: <strong id="total-boleto">R$ 0,00</strong>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- PAINEL: PIX -->
+          <div id="panel-pix" class="payment-panel">
+            <div class="alerta alerta-info">
+              <i class="fa fa-qrcode fa-2x"></i>
+              <div>
+                <strong>PIX — Aprovação imediata + 5% de desconto!</strong><br>
+                <small>O QR Code será gerado após confirmar. Válido por 30 minutos.</small><br>
+                <span style="font-size:15px;color:var(--verde);">
+                  Total com desconto: <strong id="total-pix">R$ 0,00</strong>
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- fim .secao-form de pagamento -->
+
+        <!-- Campo oculto: informa ao PHP qual método foi escolhido -->
+        <input type="hidden" id="metodo_pagamento" name="metodo_pagamento" value="cartao">
+        <!-- Campo oculto: itens do carrinho em JSON (enviados ao PHP) -->
+        <input type="hidden" id="itens_carrinho" name="itens_carrinho" value="">
+        <!-- Campo oculto: total do pedido -->
+        <input type="hidden" id="total_pedido" name="total_pedido" value="">
+
+        <!-- BOTÃO DE ENVIO FINAL -->
+        <button type="submit" class="btn btn-verde btn-lg" style="width:100%;">
+          <i class="fa fa-lock"></i> Confirmar Pedido com Segurança
+        </button>
+
+      </div><!-- fim .col-formularios -->
+
+      <!-- COLUNA DIREITA: Resumo do pedido -->
+      <div class="col-resumo">
+        <div class="resumo-checkout-box">
+          <h3>Resumo do Pedido</h3>
+
+          <!-- Itens do carrinho inseridos pelo JS -->
+          <div id="resumo-itens-checkout"></div>
+
+          <!-- Campo de cupom de desconto -->
+          <div class="campo-cupom">
+            <input type="text" name="cupom" id="cupom" placeholder="🏷️ Código de cupom">
+            <button type="button" class="btn btn-outline btn-sm" onclick="aplicarCupom()">Aplicar</button>
+          </div>
+
+          <!-- Linhas de valores -->
+          <div class="resumo-val">
+            <span>Subtotal</span>
+            <strong id="checkout-subtotal">R$ 0,00</strong>
+          </div>
+          <div class="resumo-val">
+            <span>Frete</span>
+            <strong style="color:var(--verde)">A calcular</strong>
+          </div>
+          <div class="resumo-val" id="linha-desconto" style="display:none;">
+            <span>Desconto</span>
+            <strong style="color:var(--verde)" id="valor-desconto">— R$ 0,00</strong>
+          </div>
+
+          <!-- Total em destaque -->
+          <div class="resumo-val-total">
+            <span>Total</span>
+            <span class="total-final" id="checkout-total">R$ 0,00</span>
+          </div>
+
+          <!-- Segurança -->
+          <p style="font-size:11px;color:var(--cinza-medio);text-align:center;margin-top:8px;">
+            <i class="fa fa-shield-halved" style="color:var(--verde)"></i>
+            Compra 100% segura — dados criptografados
+          </p>
+        </div>
+      </div><!-- fim .col-resumo -->
+
+    </div><!-- fim .pagina-checkout -->
+
+  </form><!-- fim do formulário -->
+
+</div><!-- fim .container -->
+
+<!-- RODAPÉ -->
+<footer class="site-footer">
+  <div class="footer-atendimento"><h4>Atendimento</h4><a href="#">📞 (11) 9999-9999</a></div>
+  <div class="footer-aceitamos"><h4>Aceitamos</h4><p>💳 Cartão | 🏦 Boleto | 📱 PIX</p></div>
+  <div class="footer-seguranca"><h4>Segurança</h4><p>🔒 Compra 100% segura</p></div>
+</footer>
+
+
+<script>
+
+  /* ============================================================
+     VARIÁVEL GLOBAL
+     Guarda o total do carrinho (usado em várias funções)
+     ============================================================ */
+  let totalCarrinho = 0;
+
+
+
+  /* ============================================================
+     FUNÇÃO: carregarResumoCheckout()
+     - Lê os dados do carrinho (localStorage)
+     - Mostra os produtos na tela
+     - Calcula o total
+     ============================================================ */
+  function carregarResumoCheckout() {
+
+    // Pega o carrinho salvo no navegador (ou cria vazio)
+    const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+
+    // Pega o container onde os itens vão aparecer
+    const container = document.getElementById('resumo-itens-checkout');
+
+    // Limpa o conteúdo antes de adicionar novamente
+    container.innerHTML = '';
+
+
+
+    // Se não tem itens no carrinho
+    if (carrinho.length === 0) {
+
+      // Mostra mensagem
+      container.innerHTML = 'Carrinho vazio';
+
+      return; // Para a função aqui
+    }
+
+
+
+    // Variável para somar os preços
+    let subtotal = 0;
+
+
+
+    // Percorre todos os produtos do carrinho
+    carrinho.forEach(item => {
+
+      // Calcula total desse item (preço x quantidade)
+      const totalItem = item.preco * item.quantidade;
+
+      // Soma no total geral
+      subtotal += totalItem;
+
+
+
+      // Adiciona o item na tela (HTML simples)
+      container.innerHTML += `
+        <div>
+          ${item.nome} | Qtd: ${item.quantidade} | R$ ${totalItem.toFixed(2)}
+        </div>
+      `;
+    });
+
+
+
+    // Salva total na variável global
+    totalCarrinho = subtotal;
+
+
+
+    // Mostra o total na tela
+    document.getElementById('checkout-total').textContent =
+      'R$ ' + subtotal.toFixed(2);
+
+  }
+
+
+
+  /* ============================================================
+     FUNÇÃO: selecionarPagamento()
+     - Apenas troca o botão ativo
+     - (versão simplificada)
+     ============================================================ */
+  function selecionarPagamento(botao) {
+
+    // Remove "ativo" de todos os botões
+    document.querySelectorAll('.payment-tab')
+      .forEach(b => b.classList.remove('ativo'));
+
+    // Ativa o botão clicado
+    botao.classList.add('ativo');
+  }
+
+
+
+  /* ============================================================
+     FUNÇÃO: buscarCEP()
+     - Usa API ViaCEP
+     - Preenche automaticamente os campos
+     ============================================================ */
+  function buscarCEP() {
+
+    // Pega o CEP digitado (somente números)
+    const cep = document.getElementById('cep').value.replace(/\D/g, '');
+
+
+
+    // Se não tiver 8 números, cancela
+    if (cep.length !== 8) return;
+
+
+
+    // Faz requisição para API
+    fetch(`https://viacep.com.br/ws/${cep}/json/`)
+
+      // Converte resposta para JSON
+      .then(res => res.json())
+
+      // Usa os dados retornados
+      .then(data => {
+
+        // Se der erro no CEP
+        if (data.erro) {
+          alert('CEP não encontrado');
+          return;
+        }
+
+        // Preenche os campos automaticamente
+        document.getElementById('rua').value = data.logradouro || '';
+        document.getElementById('bairro').value = data.bairro || '';
+        document.getElementById('cidade').value = data.localidade || '';
+        document.getElementById('estado').value = data.uf || '';
+
+      });
+
+  }
+
+
+
+  /* ============================================================
+     FUNÇÃO: formatarCartao()
+     - Formata número do cartão (XXXX XXXX XXXX XXXX)
+     ============================================================ */
+  function formatarCartao(input) {
+
+    // Remove tudo que não é número
+    let valor = input.value.replace(/\D/g, '');
+
+    // Divide em grupos de 4 números
+    valor = valor.match(/.{1,4}/g)?.join(' ') || valor;
+
+    // Atualiza o campo
+    input.value = valor;
+  }
+
+
+
+  /* ============================================================
+     FUNÇÃO: prepararEnvio()
+     - Executa antes de enviar o formulário
+     - Impede envio se carrinho estiver vazio
+     - Envia os itens para o PHP
+     ============================================================ */
+  function prepararEnvio() {
+
+    // Pega o carrinho
+    const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+
+
+
+    // Se estiver vazio
+    if (carrinho.length === 0) {
+
+      alert('Carrinho vazio!');
+
+      return false; // BLOQUEIA envio
+    }
+
+
+
+    // Coloca os itens no campo oculto (para o PHP)
+    document.getElementById('itens_carrinho').value =
+      JSON.stringify(carrinho);
+
+
+
+    return true; // PERMITE envio
+  }
+
+
+
+  /* ============================================================
+     INICIALIZAÇÃO
+     - Executa quando a página carrega
+     ============================================================ */
+  carregarResumoCheckout();
+
+</script>
+
+</body>
+</html>

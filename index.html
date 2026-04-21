@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <!-- Define a codificação de caracteres (acentos, ç, etc.) -->
+  <meta charset="UTF-8">
+
+  <!-- Faz o site se adaptar ao tamanho da tela do celular -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Nome que aparece na aba do navegador -->
+  <title>Ubirajara Kimonos — Artes Marciais</title>
+
+  <!-- Biblioteca de ícones Font Awesome (via CDN, sem download) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Arquivo CSS global do projeto (cores, header, footer, botões...) -->
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* ============================================================
+       ESTILOS EXCLUSIVOS DA PÁGINA INICIAL (index.html)
+       Estilos que só existem aqui e não precisam ir para o CSS global
+       ============================================================ */
+
+    /* ----------------------------------------------------------
+       GRID PRINCIPAL DA HOME
+       Organiza o conteúdo em seções empilhadas verticalmente
+       ---------------------------------------------------------- */
+    .pagina-home {
+      display: grid;                  /* Ativa CSS Grid */
+      grid-template-columns: 1fr;     /* Uma única coluna */
+      grid-template-rows: auto auto auto; /* Três linhas de altura automática */
+      grid-template-areas:            /* Nome de cada área */
+        "hero"
+        "categorias"
+        "produtos";
+    }
+
+    /* ----------------------------------------------------------
+       HERO — Banner principal com os Homers e o texto
+       ---------------------------------------------------------- */
+    .hero {
+      grid-area: hero;           /* Ocupa a área "hero" do grid */
+      display: flex;             /* Coloca os elementos lado a lado */
+      justify-content: space-between; /* Espaço entre eles */
+      align-items: center;       /* Centraliza verticalmente */
+      padding: 40px 80px;        /* Espaçamento interno */
+      background: var(--branco);
+      border-bottom: 3px solid var(--cinza-claro);
+      position: relative;
+      overflow: hidden;          /* Esconde elementos que vazam */
+    }
+
+    /* Fundo listrado decorativo */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0; /* Cobre toda a área */
+      background: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 40px,
+        rgba(204,0,0,0.03) 40px,
+        rgba(204,0,0,0.03) 41px
+      );
+      pointer-events: none; /* Não interfere no clique */
+    }
+
+    /* Texto centralizado entre os Homers */
+    .hero-texto {
+      text-align: center;
+      z-index: 1; /* Fica na frente do fundo */
+    }
+    .hero-texto p {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--cinza-escuro);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
+    /* Título gigante "Kimonos" */
+    .hero-texto h1 {
+      font-family: var(--fonte-titulo);
+      font-size: 80px;
+      font-weight: 900;
+      color: var(--vermelho);
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    /* Imagem do Homer ao lado do texto */
+    .hero-mascote {
+      z-index: 1;
+    }
+    .hero-mascote img {
+      width: 200px;        /* Tamanho da imagem do Homer */
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2)); /* Sombra suave */
+    }
+
+    /* ----------------------------------------------------------
+       SEÇÃO DE CATEGORIAS
+       Usa o .categorias-grid do CSS global (4 colunas)
+       ---------------------------------------------------------- */
+    .secao-categorias {
+      grid-area: categorias; /* Ocupa a área "categorias" */
+    }
+
+    /* ----------------------------------------------------------
+       SEÇÃO DE PRODUTOS
+       Usa o .produtos-grid do CSS global (4 colunas)
+       ---------------------------------------------------------- */
+    .secao-produtos {
+      grid-area: produtos; /* Ocupa a área "produtos" */
+    }
+
+    /* ----------------------------------------------------------
+       BANNER INFERIOR (área decorativa abaixo dos produtos)
+       ---------------------------------------------------------- */
+    .banner-inferior {
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* Texto | Imagem */
+      gap: 32px;
+      align-items: center;
+      background: var(--preto);       /* Fundo preto */
+      padding: 48px 80px;
+      margin-top: 16px;
+    }
+    .banner-inferior h2 {
+      font-family: var(--fonte-titulo);
+      font-size: 40px;
+      font-weight: 900;
+      color: var(--branco);
+      text-transform: uppercase;
+      line-height: 1.1;
+    }
+    .banner-inferior h2 span {
+      color: var(--vermelho); /* Palavra em destaque vermelho */
+    }
+    .banner-inferior p {
+      color: #aaa;
+      margin-top: 12px;
+      font-size: 15px;
+    }
+    /* Área de imagem no banner */
+    .banner-img {
+      display: flex;
+      justify-content: center;
+    }
+    .banner-img img {
+      max-width: 280px;
+      filter: drop-shadow(0 8px 24px rgba(204,0,0,0.4));
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ==============================================================
+     HEADER — Aparece em todas as páginas
+     O estilo já está definido no style.css (.site-header)
+     Grid: [logo] [busca] [atendimento] [ícones]
+     ============================================================== -->
+<header class="site-header">
+
+  <!-- LOGO: imagem do Homer no kimono -->
+  <div class="header-logo">
+    <img src="img/homer.png" alt="Logo Ubirajara Kimonos">
+  </div>
+
+  <!-- BARRA DE BUSCA -->
+  <div class="header-busca">
+    <input type="text" placeholder="O que você procura?">
+    <button type="button"><i class="fa fa-search"></i></button>
+  </div>
+
+  <!-- LINKS DE ATENDIMENTO -->
+  <div class="header-atendimento">
+    <a href="#"><i class="fa fa-headset"></i> Atendimento</a>
+    <a href="https://wa.me/5511999999999" target="_blank">
+      <i class="fa-brands fa-whatsapp"></i> WhatsApp
+    </a>
+    <span class="header-bem-vindo">Bem-vindo a Ubirajara Kimonos</span>
+  </div>
+
+  <!-- ÍCONES: conta e carrinho -->
+  <div class="header-icones">
+    <a href="ficha_cliente.html" title="Minha Conta">
+      <i class="fa fa-user"></i>
+      <span class="label">Conta</span>
+    </a>
+    <a href="carrinho.html" title="Carrinho de Compras">
+      <i class="fa fa-shopping-cart"></i>
+      <!-- Badge mostra quantos itens tem no carrinho (número fixo por enquanto) -->
+      <span class="badge" id="badge-carrinho">0</span>
+      <span class="label">Carrinho</span>
+    </a>
+  </div>
+
+</header>
+
+<!-- ==============================================================
+     MENU DE NAVEGAÇÃO PRINCIPAL
+     ============================================================== -->
+<nav class="site-nav">
+  <a href="index.html" class="ativo">Início</a>
+  <a href="catalogo.html">Masculino</a>
+  <a href="catalogo.html">Feminino</a>
+  <a href="catalogo.html">Infantil</a>
+  <a href="catalogo.html" class="outlet">OUTLET</a>
+</nav>
+
+<!-- ==============================================================
+     CONTEÚDO PRINCIPAL — Grid com hero, categorias e produtos
+     ============================================================== -->
+<main class="pagina-home">
+
+  <!-- ============================================================
+       HERO — Banner com Homer + texto "Lançamento Kimonos"
+       ============================================================ -->
+  <section class="hero">
+
+    <!-- Homer lado esquerdo -->
+    <div class="hero-mascote">
+      <img src="img/homer1.png" alt="Homer Simpson em kimono">
+    </div>
+
+    <!-- Texto central -->
+    <div class="hero-texto">
+      <p>Lançamento</p>
+      <h1>Kimonos</h1>
+      <!-- Botão CTA (call-to-action) para ir ao catálogo -->
+      <a href="catalogo.html" class="btn btn-vermelho btn-lg" style="margin-top:20px;">
+        <i class="fa fa-fire"></i> Ver Catálogo Completo
+      </a>
+    </div>
+
+    <!-- Homer lado direito -->
+    <div class="hero-mascote">
+      <img src="img/homer2.png" alt="Homer Simpson em kimono">
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+       SEÇÃO DE CATEGORIAS
+       4 categorias principais em círculos azuis
+       ============================================================ -->
+  <section class="secao-categorias">
+    <h2 class="titulo-secao">Nossas Categorias</h2>
+
+    <!-- Grid de 4 colunas definido no style.css -->
+    <div class="categorias-grid">
+
+      <a href="catalogo.html" class="categoria-item">
+        <div class="categoria-icone">🥊</div>
+        <span class="categoria-nome">Boxe</span>
+      </a>
+
+      <a href="catalogo.html" class="categoria-item">
+        <div class="categoria-icone">🥋</div>
+        <span class="categoria-nome">Jiu-Jitsu</span>
+      </a>
+
+      <a href="catalogo.html" class="categoria-item">
+        <div class="categoria-icone">👊</div>
+        <span class="categoria-nome">Muay Thai</span>
+      </a>
+
+      <a href="catalogo.html" class="categoria-item">
+        <div class="categoria-icone">⚔️</div>
+        <span class="categoria-nome">MMA</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SEÇÃO DE PRODUTOS — Grade com 4 cards de produtos
+       ============================================================ -->
+  <section class="secao-produtos">
+    <h2 class="titulo-secao">Confira nossos Lançamentos</h2>
+
+    <!-- Grade de 4 colunas definida no style.css -->
+    <div class="produtos-grid">
+
+      <!-- ===== PRODUTO 1: KIMONO ===== -->
+      <article class="produto-card">
+        <!-- Tag de novidade no canto superior esquerdo -->
+        <span class="tag-lancamento">🔥 Novo</span>
+
+        <!-- Imagem do produto — clicável para ir à página do produto -->
+        <a href="produto.html">
+          <img src="img/kimono.png" alt="Kimono Jiu-Jitsu">
+        </a>
+
+        <!-- Nome do produto -->
+        <span class="nome">Kimono Jiu-Jitsu Ubirajara Pro</span>
+
+        <!-- Preço antigo riscado -->
+        <span class="preco-antigo">R$ 499,00</span>
+
+        <!-- Preço atual em destaque -->
+        <span class="preco">R$ 399,00</span>
+
+        <!-- Informação de parcelamento -->
+        <span class="preco-parcelado">ou 10x de R$ 39,90 sem juros</span>
+
+        <!-- Botão de comprar que leva ao produto -->
+        <a href="produto.html" class="btn btn-verde btn-sm" style="margin-top:8px;">
+          <i class="fa fa-cart-plus"></i> Comprar
+        </a>
+      </article>
+
+      <!-- ===== PRODUTO 2: LUVA MMA VENUM ===== -->
+      <article class="produto-card">
+        <span class="tag-lancamento">🔥 Novo</span>
+
+        <a href="produto.html">
+          <img src="img/luva.jpg" alt="Luva de MMA Venum">
+        </a>
+
+        <span class="nome">Luva de MMA Venum 3.0</span>
+        <span class="preco-antigo">R$ 699,00</span>
+        <span class="preco">R$ 497,77</span>
+        <span class="preco-parcelado">ou 10x de R$ 49,78 sem juros</span>
+
+        <a href="produto.html" class="btn btn-verde btn-sm" style="margin-top:8px;">
+          <i class="fa fa-cart-plus"></i> Comprar
+        </a>
+      </article>
+
+      <!-- ===== PRODUTO 3: LUVA DE BOXE ===== -->
+      <article class="produto-card">
+        <span class="tag-lancamento">🔥 Novo</span>
+        <span class="tag-off">25% OFF</span>
+
+        <a href="produto.html">
+          <img src="img/luvaboxe.png" alt="Luva de Boxe Pro Fighter">
+        </a>
+
+        <span class="nome">Luva de Boxe Pro Fighter Hybrid 2.0</span>
+        <span class="preco-antigo">R$ 399,00</span>
+        <span class="preco">R$ 299,77</span>
+        <span class="preco-parcelado">ou 10x de R$ 29,98 sem juros</span>
+
+        <a href="produto.html" class="btn btn-verde btn-sm" style="margin-top:8px;">
+          <i class="fa fa-cart-plus"></i> Comprar
+        </a>
+      </article>
+
+      <!-- ===== PRODUTO 4: LUVA POATAN ===== -->
+      <article class="produto-card">
+        <span class="tag-lancamento">🔥 Novo</span>
+
+        <a href="produto.html">
+          <img src="img/luvapoatan.png" alt="Luva Poatan MKS">
+        </a>
+
+        <span class="nome">Luva Especial Edição Poatan MKS</span>
+        <span class="preco-antigo">R$ 299,00</span>
+        <span class="preco">R$ 219,77</span>
+        <span class="preco-parcelado">ou 10x de R$ 21,98 sem juros</span>
+
+        <a href="produto.html" class="btn btn-verde btn-sm" style="margin-top:8px;">
+          <i class="fa fa-cart-plus"></i> Comprar
+        </a>
+      </article>
+
+    </div><!-- fim .produtos-grid -->
+  </section>
+
+</main><!-- fim .pagina-home -->
+
+<!-- ==============================================================
+     BANNER INFERIOR — Chamada visual no fundo preto
+     ============================================================== -->
+<div class="banner-inferior">
+  <div>
+    <h2>Equipamentos <span>Profissionais</span><br>para Guerreiros</h2>
+    <p>Os melhores kimonos, luvas e acessórios<br>para o seu treino de artes marciais.</p>
+    <a href="catalogo.html" class="btn btn-vermelho" style="margin-top:20px;">
+      <i class="fa fa-store"></i> Ver Catálogo
+    </a>
+  </div>
+  <!-- Imagem da luva no banner -->
+  <div class="banner-img">
+    <img src="img/luvaboxe.png" alt="Luva de Boxe">
+  </div>
+</div>
+
+<!-- ==============================================================
+     RODAPÉ — Definido no style.css (.site-footer)
+     ============================================================== -->
+<footer class="site-footer">
+  <div class="footer-atendimento">
+    <h4>Atendimento</h4>
+    <a href="tel:+551199999999"><i class="fa fa-phone"></i> (11) 9999-9999</a>
+    <a href="https://wa.me/5511999999999"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+    <a href="mailto:contato@ubirajarakimonos.com.br"><i class="fa fa-envelope"></i> E-mail</a>
+  </div>
+  <div class="footer-aceitamos">
+    <h4>Aceitamos</h4>
+    <p>💳 Cartão de Crédito (até 12x)</p>
+    <p>🏦 Boleto Bancário</p>
+    <p>📱 PIX (5% de desconto)</p>
+  </div>
+  <div class="footer-seguranca">
+    <h4>Segurança</h4>
+    <p>🔒 Compra 100% segura</p>
+    <p>✅ Site verificado</p>
+    <p>📦 Entrega para todo o Brasil</p>
+  </div>
+</footer>
+
+<!-- ==============================================================
+     BOTÃO FLUTUANTE — Acesso rápido ao carrinho
+     Definido no style.css (.btn-flutuante)
+     ============================================================== -->
+<a href="carrinho.html" class="btn-flutuante" id="btn-flutuante">
+  <i class="fa fa-shopping-cart"></i>
+  Carrinho
+  <span class="subtotal" id="subtotal-flutuante">R$ 0,00</span>
+</a>
+
+<!-- ==============================================================
+     JAVASCRIPT — Atualiza o badge e subtotal do carrinho
+     Lê os dados salvos no localStorage pelo carrinho.html
+     ============================================================== -->
+<script>
+  // Lê o carrinho salvo no localStorage (memória do navegador)
+  // Se não existir, usa um array vazio []
+  const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+
+  // Calcula total de itens somando as quantidades
+  const totalItens = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
+
+  // Calcula o valor total do carrinho
+  const totalValor = carrinho.reduce((acc, item) => acc + (item.preco * item.quantidade), 0);
+
+  // Atualiza o badge vermelho do ícone do carrinho
+  const badge = document.getElementById('badge-carrinho');
+  if (badge) badge.textContent = totalItens;
+
+  // Atualiza o subtotal no botão flutuante
+  const subtotal = document.getElementById('subtotal-flutuante');
+  if (subtotal) subtotal.textContent = 'R$ ' + totalValor.toFixed(2).replace('.', ',');
+
+  // Se não tem itens, esconde o botão flutuante
+  const btnFlutuante = document.getElementById('btn-flutuante');
+  if (btnFlutuante && totalItens === 0) {
+    btnFlutuante.style.display = 'none';
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+  <!-- Define acentuação -->
+  <meta charset="UTF-8">
+
+  <!-- Responsividade (celular) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Título da página -->
+  <title>Meu Painel — Guerreiro Store</title>
+
+  <!-- Ícones (Font Awesome) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Seu CSS principal -->
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+
+    /* =========================
+       LAYOUT SIMPLES DO PAINEL
+       ========================= */
+
+    .painel {
+      display: flex; /* Coloca sidebar + conteúdo lado a lado */
+      margin-top: 20px;
+    }
+
+    /* =========================
+       MENU LATERAL (ESQUERDA)
+       ========================= */
+    .sidebar {
+      width: 220px;
+      background: #c00; /* vermelho */
+      color: white;
+      padding: 15px;
+    }
+
+    .sidebar h2 {
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+
+    .sidebar a {
+      display: block; /* cada link fica em linha separada */
+      color: white;
+      text-decoration: none;
+      margin-bottom: 10px;
+    }
+
+    .sidebar a:hover {
+      text-decoration: underline;
+    }
+
+    /* =========================
+       ÁREA PRINCIPAL
+       ========================= */
+    .conteudo {
+      flex: 1; /* ocupa o resto da tela */
+      padding: 20px;
+    }
+
+    /* =========================
+       BLOCOS DE INFORMAÇÃO
+       ========================= */
+    .card {
+      background: #f5f5f5;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+    }
+
+    /* =========================
+       FORMULÁRIO
+       ========================= */
+    .form input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+
+    .form button {
+      padding: 10px;
+      background: green;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+  </style>
+
+</head>
+
+<body>
+<!-- ===========================
+     HEADER (TOPO)
+=========================== -->
+<header class="site-header">
+
+  <!-- LOGO -->
+  <div class="header-logo">
+
+    <!-- A IMAGEM -->
+
+    <img src="img/homer.png" width="60">
+
+  </div>
+
+  <!-- BUSCA -->
+  <div class="header-busca">
+    <input type="text" placeholder="Buscar produto">
+    <button><i class="fa fa-search"></i></button>
+  </div>
+
+  <!-- ÍCONES -->
+  <div class="header-icones">
+
+    <!-- LINK PARA PÁGINAS DO SEU PROJETO -->
+    <a href="index.html">Home</a>
+    <a href="carrinho.html">Carrinho</a>
+
+  </div>
+
+</header>
+
+<!-- MENU SUPERIOR -->
+<nav class="site-nav">
+  <a href="index.html">Início</a>
+  <a href="catalogo.html">Catálogo</a>
+  <a href="pedidos.html">Pedidos</a>
+</nav>
+
+<!-- =========================
+     CONTEÚDO PRINCIPAL
+========================= -->
+<div class="container">
+
+  <div class="painel">
+
+    <!-- =========================
+         MENU LATERAL
+    ========================= -->
+    <div class="sidebar">
+
+      <h2>Meu Painel</h2>
+
+      <!-- Links do menu -->
+      <a href="#">🏠 Geral</a>
+      <a href="#">👤 Dados</a>
+      <a href="#">📦 Pedidos</a>
+      <a href="#">📍 Endereços</a>
+      <a href="#">🚪 Sair</a>
+
+    </div>
+
+    <!-- =========================
+         CONTEÚDO DIREITA
+    ========================= -->
+    <div class="conteudo">
+
+      <!-- Saudação -->
+      <h2>Olá, usuário!</h2>
+      <p>Bem-vindo ao seu painel.</p>
+
+      <!-- =========================
+           CARDS (RESUMO)
+      ========================= -->
+
+      <div class="card">
+        <h3>Dados da Conta</h3>
+        <p>Email: usuario@email.com</p>
+      </div>
+
+      <div class="card">
+        <h3>Endereços</h3>
+        <p>Nenhum endereço cadastrado.</p>
+      </div>
+
+      <!-- =========================
+           FORMULÁRIO
+      ========================= -->
+
+      <div class="card">
+
+        <h3>Editar Dados</h3>
+
+        <form class="form">
+
+          <!-- Nome -->
+          <input type="text" placeholder="Nome">
+
+          <!-- Sobrenome -->
+          <input type="text" placeholder="Sobrenome">
+
+          <!-- Email -->
+          <input type="email" placeholder="Email">
+
+          <!-- Telefone -->
+          <input type="text" placeholder="Telefone">
+
+          <!-- CPF -->
+          <input type="text" placeholder="CPF">
+
+          <!-- Botão -->
+          <button type="submit">Salvar</button>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- =========================
+     RODAPÉ
+========================= -->
+<footer class="site-footer">
+
+  <p>© 2026 Guerreiro Store</p>
+
+</footer>
+
+</body>
+</html>

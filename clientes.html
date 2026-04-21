@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clientes — Guerreiro Store</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* =============================================
+       ESTILOS EXCLUSIVOS — LISTA DE CLIENTES
+       ============================================= */
+
+    /*
+      Layout da página de clientes:
+      - Linha 1: barra de título + botão cadastrar
+      - Linha 2: filtros/busca
+      - Linha 3: tabela de clientes
+    */
+    .pagina-clientes {
+      display: grid;
+      grid-template-columns: 1fr;       /* Coluna única, responsiva */
+      grid-template-rows: auto auto auto;
+      grid-template-areas:
+        "titulo-barra"
+        "filtros-barra"
+        "tabela-clientes";
+      gap: 20px;
+      margin: 24px 0 48px;
+    }
+
+    /* Barra de título com contador e botão de cadastro */
+    .clientes-titulo-barra {
+      grid-area: titulo-barra;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .clientes-titulo-barra h1 {
+      font-family: var(--fonte-titulo);
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--preto);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .clientes-titulo-barra h1 i { color: var(--vermelho); }
+    .contador-badge {
+      background: var(--vermelho);
+      color: var(--branco);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    /* Barra de busca e filtros */
+    .clientes-filtros {
+      grid-area: filtros-barra;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .busca-clientes {
+      display: flex;
+      flex: 1;
+    }
+    .busca-clientes input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1.5px solid #ddd;
+      border-radius: var(--radius) 0 0 var(--radius);
+      font-size: 14px;
+      font-family: var(--fonte);
+      outline: none;
+    }
+    .busca-clientes input:focus { border-color: var(--vermelho); }
+    .busca-clientes button {
+      padding: 10px 16px;
+      background: var(--vermelho);
+      color: var(--branco);
+      border: none;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    /* Área da tabela de clientes */
+    .clientes-tabela {
+      grid-area: tabela-clientes;
+    }
+
+    /* Avatar do cliente (círculo com inicial do nome) */
+    .avatar-cliente {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--vermelho);
+      color: var(--branco);
+      font-size: 15px;
+      font-weight: 900;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Célula com avatar + nome lado a lado */
+    .celula-cliente {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .celula-cliente .nome { font-weight: 700; color: var(--preto); font-size: 14px; }
+    .celula-cliente .email { font-size: 11px; color: var(--cinza-medio); }
+
+    /* Badge de status do cliente */
+    .status-ativo   { background: #d1e7dd; color: #0a3622; }
+    .status-inativo { background: #f8d7da; color: #721c24; }
+
+    /* Ações por linha da tabela (editar, ver, excluir) */
+    .acoes-tabela {
+      display: flex;
+      gap: 6px;
+    }
+    .acao-btn {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      text-decoration: none;
+    }
+    .acao-ver    { background: #cfe2ff; color: #084298; }
+    .acao-editar { background: #fff3cd; color: #856404; }
+    .acao-excluir{ background: #f8d7da; color: #721c24; }
+    .acao-btn:hover { opacity: 0.8; transform: scale(1.1); }
+  </style>
+</head>
+<body>
+
+  <!-- CABEÇALHO -->
+  <header class="site-header">
+    <div class="header-logo">
+      <div style="width:60px;height:60px;border-radius:50%;background:var(--branco);display:flex;align-items:center;justify-content:center;">
+        <span style="font-size:28px;">🥋</span>
+      </div>
+    </div>
+    <div class="header-busca">
+      <input type="text" placeholder="O que você procura?" />
+      <button><i class="fa fa-search"></i></button>
+    </div>
+    <div class="header-atendimento">
+      <a href="#"><i class="fa fa-headset"></i> Atendimento</a>
+      <a href="#"><i class="fa-brands fa-whatsapp"></i> Compre pelo WhatsApp</a>
+      <span style="color:#ffcccc;font-size:12px;">Bem-vindo a Guerreiro Store</span>
+    </div>
+    <div class="header-icones">
+      <a href="ficha_cliente.html"><i class="fa fa-user"></i><span class="label">Conta</span></a>
+      <a href="#"><i class="fa fa-heart"></i><span class="label">Lista</span></a>
+      <a href="carrinho.html"><i class="fa fa-shopping-bag"></i><span class="badge">1</span><span class="label">Carrinho</span></a>
+    </div>
+  </header>
+
+  <nav class="site-nav">
+    <a href="index.html">Início</a>
+    <a href="catalogo.html">Catálogo</a>
+    <a href="clientes.html" class="ativo">Clientes</a>
+    <a href="pedidos.html">Pedidos</a>
+  </nav>
+
+  <div class="container">
+
+    <!-- Layout da página de clientes (CSS Grid) -->
+    <div class="pagina-clientes">
+
+      <!-- Barra de título -->
+      <div class="clientes-titulo-barra">
+        <h1>
+          <i class="fa fa-users"></i>
+          Lista de Clientes
+          <span class="contador-badge">24 clientes</span>
+        </h1>
+        <a href="ficha_cliente.html" class="btn btn-vermelho">
+          <i class="fa fa-plus"></i> Novo Cliente
+        </a>
+      </div>
+
+      <!-- Barra de busca e filtros -->
+      <div class="clientes-filtros">
+        <div class="busca-clientes">
+          <input type="text" placeholder="Buscar por nome, e-mail ou CPF..." />
+          <button><i class="fa fa-search"></i></button>
+        </div>
+        <select class="form-group" style="padding:10px 14px;border:1.5px solid #ddd;border-radius:var(--radius);font-family:var(--fonte);font-size:14px;outline:none;">
+          <option>Todos os status</option>
+          <option>Ativo</option>
+          <option>Inativo</option>
+        </select>
+        <button class="btn btn-cinza">
+          <i class="fa fa-filter"></i> Filtrar
+        </button>
+      </div>
+
+      <!-- Tabela de clientes -->
+      <div class="clientes-tabela">
+        <div class="tabela-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <!-- Cabeçalhos das colunas -->
+                <th>#</th>
+                <th>Cliente</th>
+                <th>Telefone</th>
+                <th>CPF</th>
+                <th>Cidade/Estado</th>
+                <th>Pedidos</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Linha 1 -->
+              <tr>
+                <td>001</td>
+                <td>
+                  <div class="celula-cliente">
+                    <div class="avatar-cliente">C</div>
+                    <div>
+                      <div class="nome">Carlos Mendes</div>
+                      <div class="email">carlos@email.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td>(11) 99999-1111</td>
+                <td>123.456.789-00</td>
+                <td>São Paulo/SP</td>
+                <td><strong>5</strong> pedidos</td>
+                <td><span class="status status-ativo">Ativo</span></td>
+                <td>
+                  <div class="acoes-tabela">
+                    <a href="ficha_cliente.html" class="acao-btn acao-ver" title="Ver ficha">
+                      <i class="fa fa-eye"></i>
+                    </a>
+                    <button class="acao-btn acao-editar" title="Editar">
+                      <i class="fa fa-pen"></i>
+                    </button>
+                    <button class="acao-btn acao-excluir" title="Excluir">
+                      <i class="fa fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Linha 2 -->
+              <tr>
+                <td>002</td>
+                <td>
+                  <div class="celula-cliente">
+                    <div class="avatar-cliente" style="background:#1a5fa8;">A</div>
+                    <div>
+                      <div class="nome">Ana Paula Rodrigues</div>
+                      <div class="email">ana@email.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td>(21) 98888-2222</td>
+                <td>987.654.321-00</td>
+                <td>Rio de Janeiro/RJ</td>
+                <td><strong>2</strong> pedidos</td>
+                <td><span class="status status-ativo">Ativo</span></td>
+                <td>
+                  <div class="acoes-tabela">
+                    <a href="ficha_cliente.html" class="acao-btn acao-ver" title="Ver ficha">
+                      <i class="fa fa-eye"></i>
+                    </a>
+                    <button class="acao-btn acao-editar" title="Editar">
+                      <i class="fa fa-pen"></i>
+                    </button>
+                    <button class="acao-btn acao-excluir" title="Excluir">
+                      <i class="fa fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Linha 3 -->
+              <tr>
+                <td>003</td>
+                <td>
+                  <div class="celula-cliente">
+                    <div class="avatar-cliente" style="background:#6f42c1;">M</div>
+                    <div>
+                      <div class="nome">Marcos Oliveira</div>
+                      <div class="email">marcos@email.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td>(31) 97777-3333</td>
+                <td>456.789.123-00</td>
+                <td>Belo Horizonte/MG</td>
+                <td><strong>8</strong> pedidos</td>
+                <td><span class="status status-ativo">Ativo</span></td>
+                <td>
+                  <div class="acoes-tabela">
+                    <a href="ficha_cliente.html" class="acao-btn acao-ver"><i class="fa fa-eye"></i></a>
+                    <button class="acao-btn acao-editar"><i class="fa fa-pen"></i></button>
+                    <button class="acao-btn acao-excluir"><i class="fa fa-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Linha 4 -->
+              <tr>
+                <td>004</td>
+                <td>
+                  <div class="celula-cliente">
+                    <div class="avatar-cliente" style="background:#198754;">J</div>
+                    <div>
+                      <div class="nome">Julia Santos</div>
+                      <div class="email">julia@email.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td>(41) 96666-4444</td>
+                <td>321.654.987-00</td>
+                <td>Curitiba/PR</td>
+                <td><strong>1</strong> pedido</td>
+                <td><span class="status status-inativo">Inativo</span></td>
+                <td>
+                  <div class="acoes-tabela">
+                    <a href="ficha_cliente.html" class="acao-btn acao-ver"><i class="fa fa-eye"></i></a>
+                    <button class="acao-btn acao-editar"><i class="fa fa-pen"></i></button>
+                    <button class="acao-btn acao-excluir"><i class="fa fa-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Linha 5 -->
+              <tr>
+                <td>005</td>
+                <td>
+                  <div class="celula-cliente">
+                    <div class="avatar-cliente" style="background:#dc6c00;">R</div>
+                    <div>
+                      <div class="nome">Rafael Costa</div>
+                      <div class="email">rafael@email.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td>(51) 95555-5555</td>
+                <td>789.123.456-00</td>
+                <td>Porto Alegre/RS</td>
+                <td><strong>3</strong> pedidos</td>
+                <td><span class="status status-ativo">Ativo</span></td>
+                <td>
+                  <div class="acoes-tabela">
+                    <a href="ficha_cliente.html" class="acao-btn acao-ver"><i class="fa fa-eye"></i></a>
+                    <button class="acao-btn acao-editar"><i class="fa fa-pen"></i></button>
+                    <button class="acao-btn acao-excluir"><i class="fa fa-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div><!-- fim .tabela-wrapper -->
+
+        <!-- Paginação -->
+        <div class="paginacao" style="display:flex;justify-content:center;gap:8px;margin-top:20px;">
+          <a href="#" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1.5px solid #ddd;border-radius:var(--radius);font-size:13px;font-weight:700;color:var(--cinza-escuro);">
+            <i class="fa fa-chevron-left"></i>
+          </a>
+          <a href="#" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius);font-size:13px;font-weight:700;background:var(--vermelho);color:var(--branco);border:none;">1</a>
+          <a href="#" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1.5px solid #ddd;border-radius:var(--radius);font-size:13px;font-weight:700;color:var(--cinza-escuro);">2</a>
+          <a href="#" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1.5px solid #ddd;border-radius:var(--radius);font-size:13px;font-weight:700;color:var(--cinza-escuro);">3</a>
+          <a href="#" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1.5px solid #ddd;border-radius:var(--radius);font-size:13px;font-weight:700;color:var(--cinza-escuro);">
+            <i class="fa fa-chevron-right"></i>
+          </a>
+        </div>
+
+      </div><!-- fim .clientes-tabela -->
+
+    </div><!-- fim .pagina-clientes -->
+
+  </div><!-- fim .container -->
+
+  <!-- Rodapé -->
+  <footer class="site-footer">
+    <div class="footer-atendimento"><h4>Atendimento</h4><a href="#">📞 Telefone</a></div>
+    <div class="footer-aceitamos"><h4>Aceitamos</h4><p>💳 Cartão | 🏦 Boleto | 📱 PIX</p></div>
+    <div class="footer-seguranca"><h4>Segurança</h4><p>🔒 Compra 100% segura</p></div>
+  </footer>
+
+</body>
+</html>

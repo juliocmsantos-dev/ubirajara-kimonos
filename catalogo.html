@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo — Ubirajara Kimonos</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* ============================================================
+       ESTILOS EXCLUSIVOS DO CATÁLOGO
+       ============================================================ */
+
+    /* ----------------------------------------------------------
+       LAYOUT PRINCIPAL: CSS Grid
+       Coluna 1 = sidebar de filtros (240px fixo)
+       Coluna 2 = área de produtos (resto da tela)
+       ---------------------------------------------------------- */
+    .pagina-catalogo {
+      display: grid;
+      grid-template-columns: 240px 1fr; /* Filtros fixos | Produtos flexíveis */
+      grid-template-areas: "filtros area-produtos"; /* Áreas nomeadas */
+      gap: 24px;
+      margin: 24px 0 48px;
+    }
+
+    /* ----------------------------------------------------------
+       SIDEBAR DE FILTROS (lado esquerdo)
+       ---------------------------------------------------------- */
+    .sidebar-filtros {
+      grid-area: filtros; /* Ocupa a área "filtros" */
+      display: flex;
+      flex-direction: column; /* Blocos empilhados */
+      gap: 16px;
+    }
+
+    /* Cada bloco de filtro (categoria, marca, preço, etc.) */
+    .filtro-bloco {
+      background: var(--branco);
+      border: 1px solid #e8e8e8;
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--sombra);
+    }
+    .filtro-bloco h4 {
+      font-family: var(--fonte-titulo);
+      font-size: 14px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--vermelho);
+      margin-bottom: 12px;
+      border-bottom: 2px solid var(--cinza-claro);
+      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Linha de checkbox + label */
+    .filtro-opcao {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--cinza-escuro);
+      padding: 4px 0;
+      transition: color var(--transicao);
+    }
+    .filtro-opcao:hover { color: var(--vermelho); }
+    .filtro-opcao input[type="checkbox"] {
+      accent-color: var(--vermelho); /* Cor da caixinha de marcação */
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+    }
+
+    /* Campos de preço mín/máx em 2 colunas */
+    .preco-range {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .preco-range input {
+      padding: 7px 10px;
+      border: 1.5px solid #ddd;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-family: var(--fonte);
+      outline: none;
+    }
+    .preco-range input:focus { border-color: var(--vermelho); }
+
+    /* ----------------------------------------------------------
+       ÁREA DE PRODUTOS (lado direito)
+       ---------------------------------------------------------- */
+    .area-produtos {
+      grid-area: area-produtos; /* Ocupa a área "area-produtos" */
+    }
+
+    /* Barra de ordenação acima dos produtos */
+    .barra-ord {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--branco);
+      border: 1px solid #e8e8e8;
+      border-radius: var(--radius);
+      padding: 10px 16px;
+      margin-bottom: 20px;
+    }
+    .barra-ord span { font-size: 13px; color: var(--cinza-medio); }
+    .barra-ord select {
+      padding: 7px 10px;
+      border: 1.5px solid #ddd;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-family: var(--fonte);
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Grade de produtos: 3 colunas */
+    .grade-catalogo {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* 3 colunas iguais */
+      gap: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-logo">
+    <img src="img/homer.png" alt="Ubirajara Kimonos">
+  </div>
+  <div class="header-busca">
+    <input type="text" placeholder="O que você procura?">
+    <button><i class="fa fa-search"></i></button>
+  </div>
+  <div class="header-atendimento">
+    <a href="#"><i class="fa fa-headset"></i> Atendimento</a>
+    <a href="#"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+    <span class="header-bem-vindo">Bem-vindo a Ubirajara Kimonos</span>
+  </div>
+  <div class="header-icones">
+    <a href="ficha_cliente.html">
+      <i class="fa fa-user"></i><span class="label">Conta</span>
+    </a>
+    <a href="carrinho.html">
+      <i class="fa fa-shopping-cart"></i>
+      <span class="badge" id="badge-carrinho">0</span>
+      <span class="label">Carrinho</span>
+    </a>
+  </div>
+</header>
+
+<nav class="site-nav">
+  <a href="index.html">Início</a>
+  <a href="catalogo.html" class="ativo">Catálogo</a>
+  <a href="pedidos.html">Pedidos</a>
+</nav>
+
+<div class="container">
+
+  <!-- Breadcrumb -->
+  <ul class="breadcrumb">
+    <li><a href="index.html">Home</a></li>
+    <li><span>Catálogo de Produtos</span></li>
+  </ul>
+
+  <!-- GRID: filtros (esq) + produtos (dir) -->
+  <div class="pagina-catalogo">
+
+    <!-- SIDEBAR DE FILTROS -->
+    <aside class="sidebar-filtros">
+
+      <!-- Filtro por Categoria -->
+      <div class="filtro-bloco">
+        <h4><i class="fa fa-tags"></i> Categoria</h4>
+        <label class="filtro-opcao"><input type="checkbox" checked> Jiu-Jitsu</label>
+        <label class="filtro-opcao"><input type="checkbox"> Boxe</label>
+        <label class="filtro-opcao"><input type="checkbox"> Muay Thai</label>
+        <label class="filtro-opcao"><input type="checkbox"> MMA</label>
+        <label class="filtro-opcao"><input type="checkbox"> Judô</label>
+      </div>
+
+      <!-- Filtro por Marca -->
+      <div class="filtro-bloco">
+        <h4><i class="fa fa-star"></i> Marca</h4>
+        <label class="filtro-opcao"><input type="checkbox" checked> Ubirajara</label>
+        <label class="filtro-opcao"><input type="checkbox"> Venum</label>
+        <label class="filtro-opcao"><input type="checkbox"> adidas</label>
+        <label class="filtro-opcao"><input type="checkbox"> MKS</label>
+      </div>
+
+      <!-- Filtro por Preço -->
+      <div class="filtro-bloco">
+        <h4><i class="fa fa-dollar-sign"></i> Faixa de Preço</h4>
+        <div class="preco-range">
+          <input type="number" placeholder="Mín R$" min="0">
+          <input type="number" placeholder="Máx R$" min="0">
+        </div>
+        <button class="btn btn-vermelho btn-sm" style="width:100%;margin-top:10px;">
+          Aplicar
+        </button>
+      </div>
+
+      <!-- Filtro por Tamanho -->
+      <div class="filtro-bloco">
+        <h4><i class="fa fa-ruler"></i> Tamanho</h4>
+        <label class="filtro-opcao"><input type="checkbox"> A1</label>
+        <label class="filtro-opcao"><input type="checkbox"> A2</label>
+        <label class="filtro-opcao"><input type="checkbox"> A3</label>
+        <label class="filtro-opcao"><input type="checkbox"> A4</label>
+        <label class="filtro-opcao"><input type="checkbox"> A5</label>
+      </div>
+
+    </aside><!-- fim sidebar -->
+
+    <!-- ÁREA DE PRODUTOS -->
+    <section class="area-produtos">
+
+      <!-- Barra de ordenação -->
+      <div class="barra-ord">
+        <span>Exibindo <strong>4</strong> produtos</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:13px;">Ordenar:</span>
+          <select>
+            <option>Relevância</option>
+            <option>Menor preço</option>
+            <option>Maior preço</option>
+            <option>Mais vendidos</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Grade de 3 colunas com os produtos -->
+      <div class="grade-catalogo">
+
+        <!-- PRODUTO 1 -->
+        <article class="produto-card">
+          <span class="tag-lancamento">🔥 Novo</span>
+          <a href="produto.html">
+            <img src="img/kimono.png" alt="Kimono Jiu-Jitsu">
+          </a>
+          <span class="nome">Kimono Jiu-Jitsu Ubirajara Pro</span>
+          <span class="preco-antigo">R$ 499,00</span>
+          <span class="preco">R$ 399,00</span>
+          <span class="preco-parcelado">10x de R$ 39,90 sem juros</span>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <a href="produto.html" class="btn btn-outline btn-sm">Ver mais</a>
+            <a href="carrinho.html" class="btn btn-verde btn-sm" onclick="adicionarRapido()">
+              <i class="fa fa-cart-plus"></i> Comprar
+            </a>
+          </div>
+        </article>
+
+        <!-- PRODUTO 2 -->
+        <article class="produto-card">
+          <span class="tag-lancamento">🔥 Novo</span>
+          <a href="produto.html">
+            <img src="img/luva.jpg" alt="Luva MMA Venum">
+          </a>
+          <span class="nome">Luva de MMA Venum 3.0 Branca/Dourada</span>
+          <span class="preco-antigo">R$ 699,00</span>
+          <span class="preco">R$ 497,77</span>
+          <span class="preco-parcelado">10x de R$ 49,78 sem juros</span>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <a href="produto.html" class="btn btn-outline btn-sm">Ver mais</a>
+            <a href="produto.html" class="btn btn-verde btn-sm">
+              <i class="fa fa-cart-plus"></i> Comprar
+            </a>
+          </div>
+        </article>
+
+        <!-- PRODUTO 3 -->
+        <article class="produto-card">
+          <span class="tag-lancamento">🔥 Novo</span>
+          <span class="tag-off">25% OFF</span>
+          <a href="produto.html">
+            <img src="img/luvaboxe.png" alt="Luva de Boxe">
+          </a>
+          <span class="nome">Luva de Boxe Pro Fighter Hybrid 2.0</span>
+          <span class="preco-antigo">R$ 399,00</span>
+          <span class="preco">R$ 299,77</span>
+          <span class="preco-parcelado">10x de R$ 29,98 sem juros</span>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <a href="produto.html" class="btn btn-outline btn-sm">Ver mais</a>
+            <a href="produto.html" class="btn btn-verde btn-sm">
+              <i class="fa fa-cart-plus"></i> Comprar
+            </a>
+          </div>
+        </article>
+
+        <!-- PRODUTO 4 -->
+        <article class="produto-card">
+          <a href="produto.html">
+            <img src="img/luvapoatan.png" alt="Luva Poatan">
+          </a>
+          <span class="nome">Luva Especial Edição Poatan MKS Amarela</span>
+          <span class="preco-antigo">R$ 299,00</span>
+          <span class="preco">R$ 219,77</span>
+          <span class="preco-parcelado">10x de R$ 21,98 sem juros</span>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <a href="produto.html" class="btn btn-outline btn-sm">Ver mais</a>
+            <a href="produto.html" class="btn btn-verde btn-sm">
+              <i class="fa fa-cart-plus"></i> Comprar
+            </a>
+          </div>
+        </article>
+
+      </div><!-- fim .grade-catalogo -->
+
+      <!-- Paginação -->
+      <div class="paginacao">
+        <a href="#"><i class="fa fa-chevron-left"></i></a>
+        <a href="#" class="ativo">1</a>
+        <a href="#">2</a>
+        <a href="#"><i class="fa fa-chevron-right"></i></a>
+      </div>
+
+    </section><!-- fim .area-produtos -->
+
+  </div><!-- fim .pagina-catalogo -->
+
+</div><!-- fim .container -->
+
+<footer class="site-footer">
+  <div class="footer-atendimento"><h4>Atendimento</h4><a href="#">📞 (11) 9999-9999</a></div>
+  <div class="footer-aceitamos"><h4>Aceitamos</h4><p>💳 Cartão | 🏦 Boleto | 📱 PIX</p></div>
+  <div class="footer-seguranca"><h4>Segurança</h4><p>🔒 Compra 100% segura</p></div>
+</footer>
+
+<script>
+  /* Atualiza badge do carrinho ao carregar a página */
+  const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  const total = carrinho.reduce((acc, i) => acc + i.quantidade, 0);
+  document.getElementById('badge-carrinho').textContent = total;
+
+  /* Adiciona produto rápido ao carrinho pelo botão do catálogo */
+  function adicionarRapido() {
+    const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    const produto = {
+      id: 'kimono-pro-001',
+      nome: 'Kimono Jiu-Jitsu Ubirajara Pro',
+      tamanho: 'A2',
+      preco: 399.00,
+      imagem: 'img/kimono.png',
+      quantidade: 1
+    };
+    const idx = carrinho.findIndex(i => i.id === produto.id && i.tamanho === produto.tamanho);
+    if (idx >= 0) { carrinho[idx].quantidade += 1; }
+    else { carrinho.push(produto); }
+    localStorage.setItem('carrinho', JSON.stringify(carrinho));
+    const t = carrinho.reduce((a, i) => a + i.quantidade, 0);
+    document.getElementById('badge-carrinho').textContent = t;
+  }
+</script>
+
+</body>
+</html>

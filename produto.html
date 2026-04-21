@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <!-- Codificação para acentos -->
+  <meta charset="UTF-8">
+  <!-- Responsividade mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Nome na aba -->
+  <title>Kimono Jiu-Jitsu — Ubirajara Kimonos</title>
+  <!-- Ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- CSS global -->
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* ============================================================
+       ESTILOS EXCLUSIVOS DA PÁGINA DE PRODUTO
+       ============================================================ */
+
+    /* ----------------------------------------------------------
+       LAYOUT PRINCIPAL: CSS GRID com 2 colunas
+       Coluna 1 (1fr) = galeria de imagens
+       Coluna 2 (1fr) = detalhes e botões de compra
+       ---------------------------------------------------------- */
+    .pagina-produto {
+      display: grid;                      /* Ativa CSS Grid */
+      grid-template-columns: 1fr 1fr;     /* Duas colunas iguais */
+      grid-template-areas: "galeria detalhes"; /* Nomeia as áreas */
+      gap: 40px;                          /* Espaço entre as colunas */
+      margin: 24px 0 48px;               /* Margem vertical */
+      align-items: start;                 /* Alinha ao topo */
+    }
+
+    /* ----------------------------------------------------------
+       COLUNA ESQUERDA: Galeria de imagens
+       ---------------------------------------------------------- */
+    .galeria {
+      grid-area: galeria; /* Ocupa a área "galeria" */
+    }
+
+    /* Imagem principal grande */
+    .galeria-principal {
+      border: 1px solid #e8e8e8;
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 400px;              /* Altura fixa */
+      background: var(--branco);
+      position: relative;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .galeria-principal img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;        /* Mantém proporção sem cortar */
+    }
+    /* Tag de desconto sobreposta à imagem */
+    .tag-off-grande {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--verde);
+      color: var(--branco);
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    /* Miniaturas da galeria (5 pequenas imagens abaixo) */
+    .galeria-thumbs {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr); /* 5 colunas iguais */
+      gap: 8px;
+    }
+    /* Cada miniatura */
+    .thumb {
+      border: 2px solid #e8e8e8;
+      border-radius: var(--radius);
+      padding: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 70px;
+      background: var(--branco);
+      transition: border-color var(--transicao);
+      overflow: hidden;
+    }
+    .thumb img {
+      height: 100%;
+      object-fit: contain;
+    }
+    .thumb:hover,
+    .thumb.ativo { border-color: var(--vermelho); } /* Borda vermelha no selecionado */
+
+    /* Linha com ações abaixo da galeria */
+    .acoes-galeria {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* 3 ações em linha */
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .acao-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px;
+      background: var(--cinza-claro);
+      border-radius: var(--radius);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--cinza-escuro);
+      cursor: pointer;
+      transition: background var(--transicao);
+      border: none;
+      text-decoration: none;
+    }
+    .acao-link:hover {
+      background: #ddd;
+      color: var(--cinza-escuro);
+      text-decoration: none;
+    }
+
+    /* ----------------------------------------------------------
+       COLUNA DIREITA: Detalhes do produto
+       ---------------------------------------------------------- */
+    .detalhes-produto {
+      grid-area: detalhes; /* Ocupa a área "detalhes" */
+    }
+
+    /* Título do produto */
+    .detalhes-produto h1 {
+      font-family: var(--fonte-titulo);
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--preto);
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    /* Referência técnica do produto */
+    .ref-produto {
+      font-size: 12px;
+      color: var(--cinza-medio);
+      margin-bottom: 12px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* Avaliação com estrelas */
+    .avaliacao {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .estrelas { color: var(--amarelo); font-size: 14px; } /* Estrelas douradas */
+
+    /* Disponibilidade do produto */
+    .disponibilidade {
+      font-size: 13px;
+      color: var(--verde);  /* Verde = disponível */
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    /* ----------------------------------------------------------
+       SELEÇÃO DE TAMANHO
+       ---------------------------------------------------------- */
+    .secao-tamanho {
+      margin-bottom: 20px;
+    }
+    .secao-tamanho h4 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--cinza-escuro);
+      margin-bottom: 8px;
+    }
+    /* Botões de tamanho */
+    .opcoes-tamanho {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn-tamanho {
+      min-width: 52px;
+      padding: 9px 14px;
+      border: 2px solid #ddd;
+      border-radius: var(--radius);
+      background: var(--branco);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: var(--fonte);
+      transition: all var(--transicao);
+    }
+    .btn-tamanho:hover,
+    .btn-tamanho.selecionado {
+      border-color: var(--vermelho); /* Borda vermelha no selecionado */
+      color: var(--vermelho);
+      background: #fff5f5;
+    }
+
+    /* ----------------------------------------------------------
+       BLOCO DE PREÇO
+       ---------------------------------------------------------- */
+    .bloco-preco { margin-bottom: 20px; }
+    .preco-de    { font-size: 14px; color: var(--cinza-medio); text-decoration: line-through; }
+    .preco-por   {
+      font-size: 36px;
+      font-weight: 900;
+      color: var(--preto);
+      font-family: var(--fonte-titulo);
+      line-height: 1;
+    }
+    .preco-desconto { font-size: 13px; color: var(--verde); font-weight: 600; margin-top: 4px; }
+    .preco-parcelas { font-size: 12px; color: var(--cinza-medio); }
+
+    /* ----------------------------------------------------------
+       CONTADOR DE QUANTIDADE + BOTÃO COMPRAR
+       ---------------------------------------------------------- */
+    .compra-controles {
+      display: grid;
+      grid-template-columns: 130px 1fr; /* Contador | Botão */
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    /* Caixa com os botões +/- e o número */
+    .contador {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid #ddd;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .contador button {
+      width: 38px;
+      height: 42px;
+      border: none;
+      background: var(--cinza-claro);
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--cinza-escuro);
+      transition: background var(--transicao);
+    }
+    .contador button:hover { background: #ddd; }
+    .contador input {
+      width: 54px;
+      height: 42px;
+      border: none;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: var(--fonte);
+      outline: none;
+    }
+
+    /* ----------------------------------------------------------
+       BLOCO DE CÁLCULO DE FRETE
+       ---------------------------------------------------------- */
+    .bloco-frete {
+      border: 1px solid #e8e8e8;
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 16px;
+    }
+    .bloco-frete h5 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--cinza-escuro);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .frete-grupo {
+      display: flex;
+      gap: 8px;
+    }
+    .frete-grupo input {
+      flex: 1;
+      padding: 9px 12px;
+      border: 1.5px solid #ddd;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-family: var(--fonte);
+      outline: none;
+      transition: border-color var(--transicao);
+    }
+    .frete-grupo input:focus { border-color: var(--vermelho); }
+
+    /* Mensagem de sucesso ao adicionar ao carrinho */
+    .msg-carrinho {
+      display: none;         /* Oculto por padrão */
+      padding: 12px 16px;
+      background: #d1e7dd;
+      color: #0a3622;
+      border-radius: var(--radius);
+      font-weight: 600;
+      margin-top: 12px;
+      border-left: 4px solid var(--verde);
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-logo">
+    <img src="img/homer.png" alt="Ubirajara Kimonos">
+  </div>
+  <div class="header-busca">
+    <input type="text" placeholder="O que você procura?">
+    <button><i class="fa fa-search"></i></button>
+  </div>
+  <div class="header-atendimento">
+    <a href="#"><i class="fa fa-headset"></i> Atendimento</a>
+    <a href="#"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+    <span class="header-bem-vindo">Bem-vindo a Ubirajara Kimonos</span>
+  </div>
+  <div class="header-icones">
+    <a href="ficha_cliente.html">
+      <i class="fa fa-user"></i>
+      <span class="label">Conta</span>
+    </a>
+    <a href="carrinho.html">
+      <i class="fa fa-shopping-cart"></i>
+      <span class="badge" id="badge-carrinho">0</span>
+      <span class="label">Carrinho</span>
+    </a>
+  </div>
+</header>
+
+<!-- MENU -->
+<nav class="site-nav">
+  <a href="index.html">Início</a>
+  <a href="catalogo.html">Catálogo</a>
+  <a href="clientes.html">Clientes</a>
+  <a href="pedidos.html">Pedidos</a>
+</nav>
+
+<!-- CONTEÚDO PRINCIPAL -->
+<div class="container">
+
+  <!-- Trilha de navegação: Home > Catálogo > Kimono -->
+  <ul class="breadcrumb">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="catalogo.html">Catálogo</a></li>
+    <li><span>Kimono Jiu-Jitsu Ubirajara Pro</span></li>
+  </ul>
+
+  <!-- GRID DO PRODUTO: galeria (esq) + detalhes (dir) -->
+  <div class="pagina-produto">
+
+    <!-- ========================================================
+         COLUNA ESQUERDA: Galeria de imagens
+         ======================================================== -->
+    <div class="galeria">
+
+      <!-- Imagem principal clicável -->
+      <div class="galeria-principal">
+        <!-- Exibido em grande, muda ao clicar nas miniaturas -->
+        <img src="img/kimono.png" alt="Kimono Jiu-Jitsu" id="img-principal">
+        <!-- Badge de desconto sobre a imagem -->
+        <span class="tag-off-grande">20% OFF</span>
+      </div>
+
+      <!-- Miniaturas (ao clicar troca a imagem principal via JS) -->
+      <div class="galeria-thumbs">
+        <div class="thumb ativo" onclick="trocarImagem('img/kimono.png', this)">
+          <img src="img/kimono.png" alt="Vista 1">
+        </div>
+        <div class="thumb" onclick="trocarImagem('img/luva.jpg', this)">
+          <img src="img/luva.jpg" alt="Vista 2">
+        </div>
+        <div class="thumb" onclick="trocarImagem('img/luvaboxe.png', this)">
+          <img src="img/luvaboxe.png" alt="Vista 3">
+        </div>
+        <div class="thumb" onclick="trocarImagem('img/luvapoatan.png', this)">
+          <img src="img/luvapoatan.png" alt="Vista 4">
+        </div>
+        <div class="thumb" onclick="trocarImagem('img/kimono.png', this)">
+          <img src="img/kimono.png" alt="Vista 5">
+        </div>
+      </div>
+
+      <!-- Botões de ação: indicar, dúvidas, continuar -->
+      <div class="acoes-galeria">
+        <a href="#" class="acao-link"><i class="fa fa-share"></i> Indicar amigo</a>
+        <a href="#" class="acao-link"><i class="fa fa-circle-question"></i> Tire dúvidas</a>
+        <a href="catalogo.html" class="acao-link"><i class="fa fa-arrow-left"></i> Continuar</a>
+      </div>
+
+    </div><!-- fim .galeria -->
+
+    <!-- ========================================================
+         COLUNA DIREITA: Detalhes e compra
+         ======================================================== -->
+    <div class="detalhes-produto">
+
+      <!-- Nome do produto -->
+      <h1>Kimono Jiu-Jitsu Ubirajara Pro — Azul/Preto</h1>
+
+      <!-- Referência técnica -->
+      <div class="ref-produto">
+        <span>REF: UBK-JIUJITSU-001</span>
+        <span>MARCA: Ubirajara</span>
+        <span>MODELO: Pro Series</span>
+      </div>
+
+      <!-- Avaliação com estrelas -->
+      <div class="avaliacao">
+        <div class="estrelas">
+          <!-- 5 estrelas cheias -->
+          <i class="fa fa-star"></i><i class="fa fa-star"></i>
+          <i class="fa fa-star"></i><i class="fa fa-star"></i>
+          <i class="fa fa-star-half-stroke"></i>
+        </div>
+        <a href="#" style="font-size:12px;color:var(--cinza-medio);">47 avaliações</a>
+      </div>
+
+      <!-- Status de disponibilidade -->
+      <p class="disponibilidade">
+        <i class="fa fa-circle-check"></i> Disponibilidade: Imediata
+      </p>
+
+      <!-- Seleção de tamanho -->
+      <div class="secao-tamanho">
+        <h4>Escolha o Tamanho:</h4>
+        <div class="opcoes-tamanho" id="opcoes-tamanho">
+          <!-- Cada botão seleciona um tamanho via JavaScript -->
+          <button class="btn-tamanho selecionado" onclick="selecionarTamanho(this, 'A1')">A1</button>
+          <button class="btn-tamanho" onclick="selecionarTamanho(this, 'A2')">A2</button>
+          <button class="btn-tamanho" onclick="selecionarTamanho(this, 'A3')">A3</button>
+          <button class="btn-tamanho" onclick="selecionarTamanho(this, 'A4')">A4</button>
+          <button class="btn-tamanho" onclick="selecionarTamanho(this, 'A5')">A5</button>
+        </div>
+      </div>
+
+      <!-- Bloco de preço -->
+      <div class="bloco-preco">
+        <div class="preco-de">de R$ 499,00</div>         <!-- Preço original riscado -->
+        <div class="preco-por">R$ 399,00</div>           <!-- Preço atual em destaque -->
+        <div class="preco-desconto">
+          <i class="fa fa-tag"></i> R$ 379,05 à vista no PIX (5% off)
+        </div>
+        <div class="preco-parcelas">ou 10x de R$ 39,90 sem juros no cartão</div>
+      </div>
+
+      <!-- Contador de quantidade + botão comprar -->
+      <div class="compra-controles">
+        <!-- Botões de diminuir/aumentar quantidade -->
+        <div class="contador">
+          <button onclick="mudarQtd(-1)" type="button">−</button>
+          <input type="number" id="quantidade" value="1" min="1" max="99">
+          <button onclick="mudarQtd(1)" type="button">+</button>
+        </div>
+
+        <!-- Botão que adiciona ao carrinho via JavaScript -->
+        <button
+          class="btn btn-verde btn-lg"
+          style="width:100%;"
+          onclick="adicionarAoCarrinho()">
+          <i class="fa fa-cart-plus"></i> Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <!-- Mensagem de confirmação (aparece após adicionar) -->
+      <div class="msg-carrinho" id="msg-carrinho">
+        <i class="fa fa-circle-check"></i>
+        Produto adicionado ao carrinho!
+        <a href="carrinho.html" style="color:var(--verde);margin-left:8px;">Ver carrinho →</a>
+      </div>
+
+      <!-- Estoque -->
+      <p style="font-size:12px;color:var(--cinza-medio);margin-top:8px;">
+        <i class="fa fa-box"></i> Estoque: 45 unidades
+      </p>
+
+      <!-- Segurança -->
+      <p style="font-size:12px;color:var(--cinza-medio);margin-top:6px;">
+        <i class="fa fa-shield-halved" style="color:var(--verde)"></i>
+        Compra 100% segura. Garantia de 30 dias.
+      </p>
+
+      <!-- Bloco de cálculo de frete -->
+      <div class="bloco-frete">
+        <h5>
+          <i class="fa fa-truck" style="color:var(--verde)"></i>
+          Calcular Frete e Prazo
+        </h5>
+        <div class="frete-grupo">
+          <input type="text" id="cep-frete" placeholder="Digite seu CEP" maxlength="9">
+          <button class="btn btn-cinza btn-sm" onclick="calcularFrete()">Calcular</button>
+        </div>
+        <a href="#" style="font-size:11px;color:var(--vermelho);display:block;margin-top:6px;">
+          Não sei meu CEP
+        </a>
+        <!-- Resultado do frete aparece aqui -->
+        <div id="resultado-frete" style="display:none;margin-top:12px;font-size:13px;color:var(--verde);font-weight:600;">
+          <i class="fa fa-check"></i> Frete Grátis — Entrega em 5 a 8 dias úteis
+        </div>
+      </div>
+
+    </div><!-- fim .detalhes-produto -->
+
+  </div><!-- fim .pagina-produto -->
+
+</div><!-- fim .container -->
+
+<!-- RODAPÉ -->
+<footer class="site-footer">
+  <div class="footer-atendimento">
+    <h4>Atendimento</h4>
+    <a href="#">📞 (11) 9999-9999</a>
+    <a href="#">💬 WhatsApp</a>
+  </div>
+  <div class="footer-aceitamos">
+    <h4>Aceitamos</h4>
+    <p>💳 Cartão | 🏦 Boleto | 📱 PIX</p>
+  </div>
+  <div class="footer-seguranca">
+    <h4>Segurança</h4>
+    <p>🔒 Compra 100% segura</p>
+  </div>
+</footer>
+
+<!-- ==============================================================
+     JAVASCRIPT — Funcionalidades da página de produto
+     ============================================================== -->
+<script>
+  /* ---------------------------------------------------------------
+     Variável que guarda o tamanho selecionado pelo usuário
+     Começa com 'A1' pois é o primeiro botão marcado como .selecionado
+     --------------------------------------------------------------- */
+  let tamanhoSelecionado = 'A1';
+
+  /* ---------------------------------------------------------------
+     FUNÇÃO: selecionarTamanho(botao, tamanho)
+     Chamada ao clicar num botão de tamanho.
+     Remove a classe .selecionado de todos e adiciona no clicado.
+     --------------------------------------------------------------- */
+  function selecionarTamanho(botao, tamanho) {
+    // Remove .selecionado de todos os botões de tamanho
+    document.querySelectorAll('.btn-tamanho').forEach(b => b.classList.remove('selecionado'));
+    // Adiciona .selecionado no botão que foi clicado
+    botao.classList.add('selecionado');
+    // Guarda o tamanho escolhido na variável global
+    tamanhoSelecionado = tamanho;
+  }
+
+  /* ---------------------------------------------------------------
+     FUNÇÃO: trocarImagem(src, thumb)
+     Chamada ao clicar numa miniatura da galeria.
+     Troca a imagem principal e marca a miniatura como ativa.
+     --------------------------------------------------------------- */
+  function trocarImagem(src, thumb) {
+    // Troca o src (caminho) da imagem principal
+    document.getElementById('img-principal').src = src;
+    // Remove .ativo de todas as miniaturas
+    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('ativo'));
+    // Adiciona .ativo na miniatura clicada
+    thumb.classList.add('ativo');
+  }
+
+  /* ---------------------------------------------------------------
+     FUNÇÃO: mudarQtd(delta)
+     Incrementa ou decrementa a quantidade.
+     delta = +1 (aumentar) ou -1 (diminuir)
+     --------------------------------------------------------------- */
+  function mudarQtd(delta) {
+    const input = document.getElementById('quantidade'); // Pega o campo
+    const novoValor = parseInt(input.value) + delta;     // Soma o delta
+    if (novoValor >= 1 && novoValor <= 99) {             // Valida entre 1 e 99
+      input.value = novoValor;                           // Atualiza o campo
+    }
+  }
+
+  /* ---------------------------------------------------------------
+     FUNÇÃO: adicionarAoCarrinho()
+     Salva o produto no localStorage (memória do navegador).
+     Isso permite que o carrinho persista ao mudar de página.
+     --------------------------------------------------------------- */
+  function adicionarAoCarrinho() {
+    // Lê o carrinho atual do localStorage (ou array vazio se não existir)
+    const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+
+    // Objeto com os dados do produto a ser adicionado
+    const produto = {
+      id: 'kimono-pro-001',                              // ID único do produto
+      nome: 'Kimono Jiu-Jitsu Ubirajara Pro',            // Nome
+      tamanho: tamanhoSelecionado,                       // Tamanho selecionado
+      preco: 399.00,                                     // Preço unitário
+      imagem: 'img/kimono.png',                          // Caminho da imagem
+      quantidade: parseInt(document.getElementById('quantidade').value) // Qtd
+    };
+
+    // Verifica se o produto (mesmo id E mesmo tamanho) já está no carrinho
+    const indexExistente = carrinho.findIndex(
+      item => item.id === produto.id && item.tamanho === produto.tamanho
+    );
+
+    if (indexExistente >= 0) {
+      // Se já existe, apenas soma a quantidade
+      carrinho[indexExistente].quantidade += produto.quantidade;
+    } else {
+      // Se não existe, adiciona como novo item
+      carrinho.push(produto);
+    }
+
+    // Salva o carrinho atualizado de volta no localStorage
+    localStorage.setItem('carrinho', JSON.stringify(carrinho));
+
+    // Atualiza o badge do carrinho no header
+    const totalItens = carrinho.reduce((acc, i) => acc + i.quantidade, 0);
+    document.getElementById('badge-carrinho').textContent = totalItens;
+
+    // Exibe a mensagem de confirmação
+    const msg = document.getElementById('msg-carrinho');
+    msg.style.display = 'block';
+
+    // Esconde a mensagem após 4 segundos
+    setTimeout(() => { msg.style.display = 'none'; }, 4000);
+  }
+
+  /* ---------------------------------------------------------------
+     FUNÇÃO: calcularFrete()
+     Simula o cálculo de frete (em um projeto real, faria uma API)
+     --------------------------------------------------------------- */
+  function calcularFrete() {
+    const cep = document.getElementById('cep-frete').value;
+    if (cep.length < 8) {
+      alert('Digite um CEP válido com 8 dígitos.');
+      return;
+    }
+    // Mostra o resultado simulado
+    document.getElementById('resultado-frete').style.display = 'block';
+  }
+
+  /* ---------------------------------------------------------------
+     Atualiza o badge ao carregar a página
+     --------------------------------------------------------------- */
+  const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  const totalItens = carrinho.reduce((acc, i) => acc + i.quantidade, 0);
+  document.getElementById('badge-carrinho').textContent = totalItens;
+</script>
+
+</body>
+</html>

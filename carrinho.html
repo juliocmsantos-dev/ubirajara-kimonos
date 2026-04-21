@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu Carrinho — Ubirajara Kimonos</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* ============================================================
+       ESTILOS EXCLUSIVOS DO CARRINHO
+       ============================================================ */
+
+
+
+    /* ----------------------------------------------------------
+       LAYOUT PRINCIPAL: CSS Grid
+       Área esquerda = lista de produtos (mais larga)
+       Área direita  = resumo do pedido (mais estreita)
+       ---------------------------------------------------------- */
+    .pagina-carrinho {
+
+      display: grid;
+
+      grid-template-columns: 1fr 340px;  /* Lista | Resumo lateral */
+
+      grid-template-rows: auto auto auto;
+
+      grid-template-areas:               /* Nomeia cada área */
+
+        "titulo-carr  titulo-carr"        /* Título ocupa as 2 colunas */
+
+        "itens-carr   resumo-carr"        /* Itens à esq, resumo à dir */
+
+        "frete-carr   resumo-carr"        /* Frete à esq, resumo continua */
+
+        "acoes-carr   resumo-carr";       /* Botões à esq, resumo continua */
+
+      gap: 0 24px;                       /* Espaço só entre colunas */
+
+      margin: 24px 0 48px;
+
+      align-items: start;                /* Alinha ao topo */
+
+    }
+
+
+    /* Título do carrinho */
+
+    .titulo-carrinho {
+
+      grid-area: titulo-carr;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+
+    }
+    .titulo-carrinho h1 {
+      font-family: var(--fonte-titulo);
+      font-size: 30px;
+      font-weight: 900;
+      color: var(--preto);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+
+    /* ----------------------------------------------------------
+       LISTA DE ITENS
+
+
+       ---------------------------------------------------------- */
+    .lista-itens { grid-area: itens-carr; }
+
+
+    /* Mensagem quando carrinho está vazio */
+    .carrinho-vazio {
+      text-align: center;
+      padding: 60px 20px;
+      background: var(--cinza-claro);
+      border-radius: var(--radius);
+
+
+    }
+
+
+
+    .carrinho-vazio i { font-size: 64px; color: #ddd; margin-bottom: 16px; }
+    .carrinho-vazio h3 { font-size: 20px; color: var(--cinza-medio); margin-bottom: 12px; }
+
+
+
+    /* Cada item do carrinho */
+    .item-carrinho {
+      display: grid;
+      /* Lixeira | Imagem | Nome+detalhes | Quantidade | Preço */
+
+
+      grid-template-columns: 30px 90px 1fr auto auto;
+
+      gap: 16px;
+
+      align-items: center;
+
+      padding: 20px;
+
+      background: var(--branco);
+
+      border: 1px solid #e8e8e8;
+
+      border-bottom: none; /* Remove borda duplicada entre itens */
+      transition: background var(--transicao);
+
+    }
+    /* Primeiro item: arredonda topo */
+
+    .item-carrinho:first-child { border-radius: var(--radius) var(--radius) 0 0; }
+
+    /* Último item: arredonda baixo e recoloca borda */
+
+    .item-carrinho:last-child  {
+
+      border-bottom: 1px solid #e8e8e8;
+
+      border-radius: 0 0 var(--radius) var(--radius);
+
+    }
+    /* Item único: arredonda todos os cantos */
+
+    .item-carrinho:only-child {
+      border-radius: var(--radius);
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .item-carrinho:hover { background: #fafafa; }
+
+
+
+
+    /* Botão de remover item (ícone de lixeira) */
+    .btn-remover {
+      background: none;
+      border: none;
+      color: #ccc;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 4px;
+      transition: color var(--transicao);
+    }
+    .btn-remover:hover { color: var(--vermelho); }
+
+    /* Imagem do produto no carrinho */
+    .item-img-wrapper {
+      width: 90px;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #eee;
+      border-radius: var(--radius);
+      background: #f9f9f9;
+      overflow: hidden;
+    }
+    .item-img-wrapper img { width: 100%; height: 100%; object-fit: contain; }
+
+
+    /* Detalhes do produto (nome, ref, tamanho) */
+    .item-info h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--vermelho);
+      margin-bottom: 4px;
+    }
+    .item-info h3 a { color: var(--vermelho); }
+    .item-info p    { font-size: 12px; color: var(--cinza-medio); margin-bottom: 2px; }
+
+    /* Controle de quantidade no carrinho */
+    .item-qtd {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid #ddd;
+      border-radius: var(--radius);
+      overflow: hidden;
+
+    }
+    .item-qtd button {
+      width: 32px;
+      height: 34px;
+      background: var(--cinza-claro);
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 700;
+      transition: background var(--transicao);
+
+
+
+    }
+    .item-qtd button:hover { background: #ddd; }
+    .item-qtd input {
+      width: 38px;
+      height: 34px;
+      border: none;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: var(--fonte);
+      outline: none;
+    }
+
+
+
+    /* Preço do item */
+    .item-preco {
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--preto);
+      font-family: var(--fonte-titulo);
+      white-space: nowrap;
+      min-width: 90px;
+      text-align: right;
+
+
+    }
+
+    /* ----------------------------------------------------------
+       SEÇÃO DE FRETE
+       ---------------------------------------------------------- */
+    .secao-frete {
+      grid-area: frete-carr;
+      margin-top: 20px;
+    }
+
+    /* ----------------------------------------------------------
+       AÇÕES (botões de continuar comprando, cupom)
+       ---------------------------------------------------------- */
+    .secao-acoes { grid-area: acoes-carr; margin-top: 20px; }
+    .aviso-cupom {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #664d03;
+      margin-bottom: 16px;
+
+
+    }
+
+    /* ----------------------------------------------------------
+       RESUMO DO PEDIDO (lateral direita)
+       ---------------------------------------------------------- */
+    
+       .resumo-carr {
+      grid-area: resumo-carr; /* Ocupa a área de resumo */
+    }
+    .resumo-box {
+      background: var(--branco);
+      border: 1px solid #e8e8e8;
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--sombra);
+      position: sticky; /* Fica fixo ao rolar a página */
+      top: 85px;
+    }
+    .resumo-box h3 {
+      font-family: var(--fonte-titulo);
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--preto);
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--cinza-claro);
+      padding-bottom: 10px;
+    }
+
+    /* Linha subtotal/frete/total */
+    .resumo-linha {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .resumo-linha .rotulo { color: var(--cinza-medio); }
+    .resumo-linha .val    { font-weight: 700; color: var(--preto); }
+
+    /* Linha do total em destaque */
+    .resumo-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 2px solid var(--cinza-claro);
+      padding-top: 12px;
+      margin-top: 8px;
+      margin-bottom: 16px;
+    }
+    .resumo-total .rotulo  { font-size: 16px; font-weight: 700; }
+    .resumo-total .val-total {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--preto);
+      font-family: var(--fonte-titulo);
+    }
+    .resumo-condicoes {
+      font-size: 11px;
+      color: var(--cinza-medio);
+      text-align: center;
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+
+<body>
+
+  
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-logo">
+    <img src="img/homer.png" alt="Ubirajara Kimonos">
+  </div>
+  <div class="header-busca">
+    <input type="text" placeholder="O que você procura?">
+    <button><i class="fa fa-search"></i></button>
+  </div>
+  <div class="header-atendimento">
+    <a href="#"><i class="fa fa-headset"></i> Atendimento</a>
+    <a href="#"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+    <span class="header-bem-vindo">Bem-vindo a Ubirajara Kimonos</span>
+  </div>
+  <div class="header-icones">
+    <a href="ficha_cliente.html">
+      <i class="fa fa-user"></i>
+      <span class="label">Conta</span>
+    </a>
+    <a href="carrinho.html">
+      <i class="fa fa-shopping-cart"></i>
+      <span class="badge" id="badge-carrinho">0</span>
+      <span class="label">Carrinho</span>
+    </a>
+  </div>
+</header>
+
+<nav class="site-nav">
+  <a href="index.html">Início</a>
+  <a href="catalogo.html">Produtos</a>
+  <a href="pedidos.html">Pedidos</a>
+</nav>
+
+<div class="container">
+
+  <!-- GRID PRINCIPAL DO CARRINHO -->
+  <div class="pagina-carrinho">
+
+    <!-- TÍTULO + BOTÃO CONTINUAR -->
+    <div class="titulo-carrinho">
+      <h1><i class="fa fa-shopping-cart" style="color:var(--vermelho)"></i> Meu Carrinho</h1>
+      <a href="checkout.html" class="btn btn-verde btn-lg" id="btn-continuar">
+        <i class="fa fa-lock"></i> Continuar
+      </a>
+    </div>
+
+    <!-- LISTA DE ITENS (preenchida pelo JavaScript) -->
+    <div class="lista-itens" id="lista-itens">
+      <!-- Os produtos serão inseridos aqui pelo JS -->
+    </div>
+
+    <!-- SEÇÃO DE FRETE -->
+    <div class="secao-frete card-box">
+      <h3><i class="fa fa-truck"></i> Calcular Frete</h3>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="cep-carrinho" placeholder="CEP 00000-000" maxlength="9"
+               style="flex:1;padding:10px 14px;border:1.5px solid #ddd;border-radius:var(--radius);font-family:var(--fonte);font-size:14px;outline:none;">
+        <button class="btn btn-cinza" onclick="calcularFrete()">Ok</button>
+      </div>
+      <a href="#" style="font-size:12px;color:var(--vermelho);display:block;margin-top:6px;">
+        Não sei meu CEP
+      </a>
+      <!-- Resultado do frete simulado -->
+      <div id="resultado-frete" style="display:none;margin-top:10px;font-size:13px;color:var(--verde);font-weight:600;">
+        <i class="fa fa-check"></i> Frete grátis! Entrega em 5-8 dias úteis.
+      </div>
+    </div>
+
+    <!-- AÇÕES ABAIXO DOS ITENS -->
+    <div class="secao-acoes">
+      <div class="aviso-cupom">
+        <i class="fa fa-tag"></i>
+        <strong>Cupom de desconto?</strong> Use-o na próxima página de pagamento!
+      </div>
+      <a href="catalogo.html" class="btn btn-outline">
+        <i class="fa fa-arrow-left"></i> Escolher mais produtos
+      </a>
+    </div>
+
+    <!-- RESUMO LATERAL (direita) -->
+    <div class="resumo-carr">
+      <div class="resumo-box">
+        <h3>Resumo do Pedido</h3>
+
+        <!-- Subtotal (atualizado pelo JS) -->
+        <div class="resumo-linha">
+          <span class="rotulo">Subtotal</span>
+          <span class="val" id="resumo-subtotal">R$ 0,00</span>
+        </div>
+
+        <!-- Frete -->
+        <div class="resumo-linha">
+          <span class="rotulo">Frete</span>
+          <span class="val" style="color:var(--verde)">A calcular</span>
+        </div>
+
+        <!-- TOTAL -->
+        <div class="resumo-total">
+          <span class="rotulo">Total</span>
+          <span class="val-total" id="resumo-total">R$ 0,00</span>
+        </div>
+
+        <!-- Condições de pagamento simuladas -->
+        <div class="resumo-condicoes" id="resumo-condicoes">
+          Adicione produtos para ver as condições de parcelamento.
+        </div>
+
+        <!-- Botão de finalizar compra -->
+        <a href="checkout.html" class="btn btn-verde btn-lg" style="width:100%;" id="btn-finalizar">
+          <i class="fa fa-lock"></i> Finalizar Compra
+        </a>
+      </div>
+    </div>
+
+  </div><!-- fim .pagina-carrinho -->
+
+</div><!-- fim .container -->
+
+<!-- RODAPÉ -->
+<footer class="site-footer">
+  <div class="footer-atendimento"><h4>Atendimento</h4><a href="#">📞 (11) 9999-9999</a></div>
+  <div class="footer-aceitamos"><h4>Aceitamos</h4><p>💳 Cartão | 🏦 Boleto | 📱 PIX</p></div>
+  <div class="footer-seguranca"><h4>Segurança</h4><p>🔒 Compra 100% segura</p></div>
+</footer>
+
+<!-- ==============================================================
+     JAVASCRIPT — Renderiza e gerencia o carrinho
+     Lê os dados do localStorage e atualiza a tela dinamicamente
+     ============================================================== -->
+<script>
+  /* ---------------------------------------------------------------
+     FUNÇÃO PRINCIPAL: renderizarCarrinho()
+     Lê o localStorage e exibe os itens na tela
+     --------------------------------------------------------------- */
+  function renderizarCarrinho() {
+    // Lê o array de itens do localStorage
+    const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+
+    const container = document.getElementById('lista-itens'); // Div onde ficam os itens
+    container.innerHTML = ''; // Limpa o conteúdo anterior
+
+    // Se o carrinho estiver vazio, mostra mensagem
+    if (carrinho.length === 0) {
+      container.innerHTML = `
+        <div class="carrinho-vazio">
+          <i class="fa fa-cart-shopping"></i>
+          <h3>Seu carrinho está vazio</h3>
+          <p>Adicione produtos para continuar.</p>
+          <a href="catalogo.html" class="btn btn-vermelho" style="margin-top:16px;">
+            <i class="fa fa-store"></i> Ver Produtos
+          </a>
+        </div>`;
+
+      // Esconde os botões de finalizar compra
+      document.getElementById('btn-continuar').style.display = 'none';
+      document.getElementById('btn-finalizar').style.display = 'none';
+      return; // Para a função aqui
+    }
+
+    // Se tem itens, cria o HTML de cada um
+    carrinho.forEach((item, index) => {
+      // Cria um elemento div para o item
+      const div = document.createElement('div');
+      div.classList.add('item-carrinho');
+
+      // Preenche o HTML do item com os dados do objeto
+      div.innerHTML = `
+        <!-- Botão de remover: chama removerItem passando o índice -->
+        <button class="btn-remover" onclick="removerItem(${index})" title="Remover">
+          <i class="fa fa-trash"></i>
+        </button>
+
+        <!-- Imagem do produto -->
+        <div class="item-img-wrapper">
+          <img src="${item.imagem}" alt="${item.nome}">
+        </div>
+
+        <!-- Nome, referência e tamanho -->
+        <div class="item-info">
+          <h3><a href="produto.html">${item.nome}</a></h3>
+          <p>Tamanho: ${item.tamanho}</p>
+          <p>Preço unitário: R$ ${item.preco.toFixed(2).replace('.', ',')}</p>
+        </div>
+
+        <!-- Controle de quantidade -->
+        <div class="item-qtd">
+          <button onclick="atualizarQtd(${index}, -1)">−</button>
+          <input type="number" value="${item.quantidade}" min="1"
+                 onchange="setQtd(${index}, this.value)">
+          <button onclick="atualizarQtd(${index}, +1)">+</button>
+        </div>
+
+        <!-- Preço total do item (quantidade × preço unitário) -->
+        <div class="item-preco">
+          R$ ${(item.preco * item.quantidade).toFixed(2).replace('.', ',')}
+        </div>
+      `;
+
+      container.appendChild(div); // Adiciona o item ao container
+    });
+
+    // Atualiza os totais no resumo lateral
+    atualizarResumo(carrinho);
+  }
+
+  /* ---------------------------------------------------------------
+     FUNÇÃO: atualizarResumo(carrinho)
+     Calcula o subtotal e total e exibe no resumo lateral
+     --------------------------------------------------------------- */
+  function atualizarResumo(carrinho) {
+    // Soma: quantidade × preço de cada item
+    const subtotal = carrinho.reduce((acc, item) => acc + (item.preco * item.quantidade), 0);
+
+    // Exibe o subtotal formatado
+    document.getElementById('resumo-subtotal').textContent =
+      'R$ ' + subtotal.toFixed(2).replace('.', ',');
+
+    // O total é igual ao subtotal (sem frete calculado ainda)
+    document.getElementById('resumo-total').textContent =
+      'R$ ' + subtotal.toFixed(2).replace('.', ',');
+
+    // Calcula as condições de parcelamento (simulação)
+    const parcela6x = (subtotal / 6).toFixed(2).replace('.', ',');
+    const boleto    = (subtotal * 0.95).toFixed(2).replace('.', ','); // 5% desconto
+    document.getElementById('resumo-condicoes').innerHTML = `
+      <strong>R$ ${boleto}</strong> no boleto/PIX (5% off)<br>
+      ou 6x sem juros de <strong>R$ ${parcela6x}</strong> no cartão
+    `;
+
+    // Atualiza o badge do header
+    const totalItens = carrinho.reduce((acc, i) => acc + i.quantidade, 0);
+    document.getElementById('badge-carrinho').textContent = totalItens;
+  }
+
+  /* ---------------------------------------------------------------
+     FUNÇÃO: removerItem(index)
+     Remove um item do array pelo índice e salva no localStorage
+     --------------------------------------------------------------- */
+  function removerItem(index) {
+    const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    carrinho.splice(index, 1);                          // Remove 1 item na posição index
+    localStorage.setItem('carrinho', JSON.stringify(carrinho)); // Salva
+    renderizarCarrinho();                               // Re-renderiza a tela
+  }
+
+  /* ---------------------------------------------------------------
+     FUNÇÃO: atualizarQtd(index, delta)
+     Aumenta ou diminui a quantidade de um item (+1 ou -1)
+     --------------------------------------------------------------- */
+  function atualizarQtd(index, delta) {
+    const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    const novaQtd = carrinho[index].quantidade + delta; // Calcula nova quantidade
+    if (novaQtd < 1) return; // Não permite zero ou negativo
+    carrinho[index].quantidade = novaQtd;
+    localStorage.setItem('carrinho', JSON.stringify(carrinho));
+    renderizarCarrinho();
+  }
+
+  /* ---------------------------------------------------------------
+     FUNÇÃO: setQtd(index, valor)
+     Define a quantidade manualmente via campo numérico
+     --------------------------------------------------------------- */
+  function setQtd(index, valor) {
+    const qtd = parseInt(valor);
+    if (isNaN(qtd) || qtd < 1) return; // Ignora valores inválidos
+    const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    carrinho[index].quantidade = qtd;
+    localStorage.setItem('carrinho', JSON.stringify(carrinho));
+    renderizarCarrinho();
+  }
+
+  /* ---------------------------------------------------------------
+     FUNÇÃO: calcularFrete()
+     Simula o cálculo de frete pelo CEP informado
+     --------------------------------------------------------------- */
+  function calcularFrete() {
+    const cep = document.getElementById('cep-carrinho').value;
+    if (cep.replace(/\D/g, '').length < 8) { // Remove não-dígitos e verifica
+      alert('Por favor, insira um CEP válido.');
+      return;
+    }
+    document.getElementById('resultado-frete').style.display = 'block';
+  }
+
+  /* ---------------------------------------------------------------
+     Executa ao carregar a página: renderiza o carrinho
+     --------------------------------------------------------------- */
+  renderizarCarrinho();
+</script>
+
+</body>
+</html>

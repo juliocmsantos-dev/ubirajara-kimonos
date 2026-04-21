@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pedidos — Guerreiro Store</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* =============================================
+       ESTILOS EXCLUSIVOS — LISTA DE PEDIDOS
+       ============================================= */
+
+    /*
+      Layout da página de pedidos com CSS Grid:
+      - Linha 1: título + filtros de status
+      - Linha 2: cards de estatísticas rápidas
+      - Linha 3: tabela de pedidos
+    */
+    .pagina-pedidos {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto auto;
+      grid-template-areas:
+        "titulo-pedidos"
+        "stats-pedidos"
+        "tabela-pedidos";
+      gap: 24px;
+      margin: 24px 0 48px;
+    }
+
+    /* Barra do título */
+    .pedidos-titulo {
+      grid-area: titulo-pedidos;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .pedidos-titulo h1 {
+      font-family: var(--fonte-titulo);
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--preto);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .pedidos-titulo h1 i { color: var(--vermelho); }
+
+    /* Filtros de status (abas horizontais) */
+    .filtros-status {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .filtro-status-btn {
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1.5px solid #ddd;
+      background: var(--branco);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: var(--fonte);
+      color: var(--cinza-medio);
+    }
+    .filtro-status-btn:hover { border-color: var(--vermelho); color: var(--vermelho); }
+    .filtro-status-btn.ativo {
+      background: var(--vermelho);
+      border-color: var(--vermelho);
+      color: var(--branco);
+    }
+
+    /* =============================================
+       CARDS DE ESTATÍSTICAS RÁPIDAS
+       ============================================= */
+    .stats-pedidos {
+      grid-area: stats-pedidos;
+      /* Grid de 4 colunas — um card para cada status */
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .stat-card {
+      background: var(--branco);
+      border: 1px solid #e8e8e8;
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      box-shadow: var(--sombra);
+      border-top: 4px solid transparent;    /* Cor diferente por status */
+      transition: transform 0.2s;
+    }
+    .stat-card:hover { transform: translateY(-3px); }
+    .stat-card.total       { border-top-color: var(--preto); }
+    .stat-card.processando { border-top-color: #0d6efd; }
+    .stat-card.enviado     { border-top-color: #f5a623; }
+    .stat-card.entregue    { border-top-color: var(--verde); }
+
+    .stat-card .stat-icone {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    .stat-card .stat-numero {
+      font-family: var(--fonte-titulo);
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--preto);
+      line-height: 1;
+    }
+    .stat-card .stat-label {
+      font-size: 12px;
+      color: var(--cinza-medio);
+      margin-top: 4px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* =============================================
+       TABELA DE PEDIDOS
+       ============================================= */
+    .tabela-pedidos {
+      grid-area: tabela-pedidos;
+    }
+
+    /* Linha expandida com detalhes do pedido */
+    .detalhe-pedido {
+      background: #fafafa;
+      padding: 16px 24px;
+      border-top: 1px dashed #eee;
+    }
+    .detalhe-pedido-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .detalhe-bloco h5 {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--cinza-medio);
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .detalhe-bloco p {
+      font-size: 13px;
+      color: var(--cinza-escuro);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CABEÇALHO -->
+  
+<!-- ===========================
+     HEADER (TOPO)
+=========================== -->
+<header class="site-header">
+
+  <!-- LOGO -->
+  <div class="header-logo">
+
+    <!-- Exemplo: img/logo.png -->
+    <img src="img/homer.png" width="60">
+
+  </div>
+
+  <!-- BUSCA -->
+  <div class="header-busca">
+    <input type="text" placeholder="Buscar produto">
+    <button><i class="fa fa-search"></i></button>
+  </div>
+
+  <!-- ÍCONES -->
+  <div class="header-icones">
+
+    <!-- LINK PARA PÁGINAS  -->
+    <a href="index.html">Home</a>
+    <a href="carrinho.html">Carrinho</a>
+
+  </div>
+
+</header>
+
+
+  <nav class="site-nav">
+    <a href="index.html">Início</a>
+    <a href="catalogo.html">Catálogo</a>
+    <a href="clientes.html">Clientes</a>
+    <a href="pedidos.html" class="ativo">Pedidos</a>
+    <a href="ficha_cliente.html">Minha Conta</a>
+  </nav>
+
+  <div class="container">
+
+    <ul class="breadcrumb">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="ficha_cliente.html">Minha Conta</a></li>
+      <li><span>Meus Pedidos</span></li>
+    </ul>
+
+    <!-- Layout da página de pedidos (CSS Grid) -->
+   
+
+        <!-- Paginação -->
+        <div style="display:flex;justify-content:center;gap:8px;margin-top:20px;">
+          <a href="#" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1.5px solid #ddd;border-radius:var(--radius);font-size:13px;font-weight:700;color:var(--cinza-escuro);">
+            <i class="fa fa-chevron-left"></i>
+          </a>
+          <a href="#" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius);font-size:13px;font-weight:700;background:var(--vermelho);color:var(--branco);border:none;">1</a>
+          <a href="#" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1.5px solid #ddd;border-radius:var(--radius);font-size:13px;font-weight:700;color:var(--cinza-escuro);">2</a>
+          <a href="#" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1.5px solid #ddd;border-radius:var(--radius);font-size:13px;font-weight:700;color:var(--cinza-escuro);">
+            <i class="fa fa-chevron-right"></i>
+          </a>
+        </div>
+
+      </div><!-- fim .tabela-pedidos -->
+
+    </div><!-- fim .pagina-pedidos -->
+
+  </div><!-- fim .container -->
+
+  <!-- Rodapé -->
+  <footer class="site-footer">
+    <div class="footer-atendimento"><h4>Atendimento</h4><a href="#">📞 Telefone</a></div>
+    <div class="footer-aceitamos"><h4>Aceitamos</h4><p>💳 Cartão | 🏦 Boleto | 📱 PIX</p></div>
+    <div class="footer-seguranca"><h4>Segurança</h4><p>🔒 Compra 100% segura</p></div>
+  </footer>
+
+  <script>
+    /*
+      Função para mostrar/ocultar os detalhes de um pedido.
+      Parâmetro: id — o ID da linha <tr> de detalhe
+    */
+    function toggleDetalhe(id) {
+      const linha = document.getElementById(id);
+      // Alterna entre visível (table-row) e oculto (none)
+      if (linha.style.display === 'none' || linha.style.display === '') {
+        linha.style.display = 'table-row';
+      } else {
+        linha.style.display = 'none';
+      }
+    }
+
+    /*
+      Filtros de status — troca a classe 'ativo' entre os botões
+    */
+    document.querySelectorAll('.filtro-status-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Remove 'ativo' de todos
+        document.querySelectorAll('.filtro-status-btn').forEach(b => b.classList.remove('ativo'));
+        // Adiciona 'ativo' no clicado
+        this.classList.add('ativo');
+      });
+    });
+  </script>
+
+</body>
+</html>

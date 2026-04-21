@@ -1,0 +1,752 @@
+/* =====================================================================
+   UBIRAJARA KIMONOS — style.css
+   Arquivo de estilos GLOBAL: usado por TODAS as páginas do projeto.
+   Aqui ficam os estilos que se repetem em todo o site (header, footer,
+   botões, cards, tabelas, formulários, etc.)
+   ===================================================================== */
+
+/* -----------------------------------------------------------------------
+   IMPORTAÇÃO DE FONTES DO GOOGLE
+   A fonte "Barlow" é usada no texto normal.
+   A "Barlow Condensed" é usada em títulos grandes.
+   ----------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;900&family=Barlow+Condensed:wght@700;900&display=swap');
+
+/* -----------------------------------------------------------------------
+   VARIÁVEIS CSS (como constantes do CSS)
+   Usando :root para que qualquer elemento filho possa usar com var(--nome)
+   ----------------------------------------------------------------------- */
+:root {
+  --vermelho:        #cc0000;   /* Cor principal da marca Ubirajara */
+  --vermelho-escuro: #990000;   /* Versão mais escura (usada no hover) */
+  --preto:           #111111;   /* Preto quase puro */
+  --cinza-escuro:    #333333;   /* Cinza para textos */
+  --cinza-medio:     #666666;   /* Cinza para textos secundários */
+  --cinza-claro:     #f4f4f4;   /* Fundo claro de seções */
+  --branco:          #ffffff;   /* Branco puro */
+  --verde:           #28a745;   /* Cor dos botões de compra */
+  --verde-escuro:    #1e7e34;   /* Verde hover */
+  --amarelo:         #ffc107;   /* Para estrelas de avaliação */
+  --sombra:          0 2px 8px rgba(0,0,0,0.12); /* Sombra padrão */
+  --radius:          6px;       /* Arredondamento dos cantos */
+  --fonte:           'Barlow', sans-serif;          /* Fonte principal */
+  --fonte-titulo:    'Barlow Condensed', sans-serif; /* Fonte de títulos */
+  --transicao:       0.2s ease; /* Transição padrão para animações */
+}
+
+/* -----------------------------------------------------------------------
+   RESET BÁSICO
+   Remove margens e paddings padrão do navegador para ter controle total
+   ----------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box; /* Inclui padding e border no tamanho total */
+  margin: 0;              /* Remove margem padrão */
+  padding: 0;             /* Remove padding padrão */
+}
+
+/* -----------------------------------------------------------------------
+   ESTILO BASE DO BODY (corpo da página)
+   ----------------------------------------------------------------------- */
+body {
+  font-family: var(--fonte);      /* Aplica a fonte Barlow em tudo */
+  color: var(--cinza-escuro);     /* Cor padrão dos textos */
+  background: var(--branco);      /* Fundo branco */
+  font-size: 15px;                /* Tamanho base da fonte */
+  line-height: 1.5;               /* Espaçamento entre linhas */
+}
+
+/* -----------------------------------------------------------------------
+   LINKS (âncoras <a>)
+   ----------------------------------------------------------------------- */
+a {
+  color: var(--vermelho);   /* Links em vermelho por padrão */
+  text-decoration: none;    /* Sem sublinhado */
+}
+a:hover {
+  text-decoration: underline; /* Sublinhado ao passar o mouse */
+}
+
+/* -----------------------------------------------------------------------
+   IMAGENS
+   ----------------------------------------------------------------------- */
+img {
+  max-width: 100%; /* Nunca ultrapassa o container */
+  display: block;  /* Remove espaço extra abaixo das imagens */
+}
+
+/* =======================================================================
+   HEADER — Barra do topo do site
+   Aparece em TODAS as páginas
+   Grid: [logo] [busca] [atendimento] [ícones]
+   ======================================================================= */
+.site-header {
+  display: grid;                              /* Ativa o CSS Grid */
+  grid-template-columns: 80px 1fr auto auto;  /* 4 colunas: logo | busca | atendimento | ícones */
+  grid-template-areas: "logo busca atendimento icones"; /* Nomeia as áreas */
+  align-items: center;                        /* Centraliza verticalmente */
+  background: var(--vermelho);                /* Fundo vermelho */
+  padding: 10px 24px;                         /* Espaçamento interno */
+  gap: 16px;                                  /* Espaço entre colunas */
+  position: sticky;                           /* Fica fixo no topo ao rolar */
+  top: 0;                                     /* Cola no topo da janela */
+  z-index: 100;                               /* Fica na frente de outros elementos */
+  box-shadow: var(--sombra);                  /* Sombra abaixo do header */
+}
+
+/* --- LOGO (primeira área do header) --- */
+.header-logo {
+  grid-area: logo;          /* Ocupa a área "logo" do grid */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.header-logo img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;       /* Deixa a imagem circular */
+  object-fit: cover;        /* Corta a imagem para caber no círculo */
+  border: 2px solid var(--branco); /* Borda branca ao redor */
+}
+
+/* --- BARRA DE BUSCA (segunda área) --- */
+.header-busca {
+  grid-area: busca;   /* Ocupa a área "busca" */
+  display: flex;      /* Campo + botão lado a lado */
+}
+.header-busca input {
+  flex: 1;            /* Ocupa todo espaço disponível */
+  padding: 10px 16px;
+  border: none;
+  border-radius: var(--radius) 0 0 var(--radius); /* Arredonda só a esquerda */
+  font-size: 14px;
+  font-family: var(--fonte);
+  outline: none;
+}
+.header-busca button {
+  padding: 10px 18px;
+  background: var(--preto);       /* Botão preto */
+  color: var(--branco);
+  border: none;
+  border-radius: 0 var(--radius) var(--radius) 0; /* Arredonda só a direita */
+  cursor: pointer;
+  font-size: 16px;
+  transition: background var(--transicao);
+}
+.header-busca button:hover {
+  background: #000; /* Mais escuro no hover */
+}
+
+/* --- LINKS DE ATENDIMENTO (terceira área) --- */
+.header-atendimento {
+  grid-area: atendimento; /* Ocupa a área "atendimento" */
+  display: flex;
+  gap: 20px;
+  color: var(--branco);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap; /* Não quebra em duas linhas */
+}
+.header-atendimento a {
+  color: var(--branco);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.header-atendimento a:hover {
+  text-decoration: underline;
+}
+.header-bem-vindo {
+  color: #ffcccc; /* Texto de boas-vindas em vermelho claro */
+  font-size: 12px;
+  align-self: center;
+}
+
+/* --- ÍCONES DO USUÁRIO (quarta área: conta, favoritos, carrinho) --- */
+.header-icones {
+  grid-area: icones; /* Ocupa a área "icones" */
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.header-icones a {
+  color: var(--branco);
+  display: flex;
+  flex-direction: column; /* Ícone em cima, label embaixo */
+  align-items: center;
+  gap: 2px;
+  font-size: 20px;
+  position: relative; /* Necessário para o badge do carrinho */
+  transition: opacity var(--transicao);
+}
+.header-icones a:hover {
+  opacity: 0.85;
+  text-decoration: none;
+}
+.header-icones a span.label {
+  font-size: 10px;
+  font-weight: 600;
+}
+/* Badge vermelho que aparece no ícone do carrinho (ex: "3") */
+.badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: var(--preto);
+  color: var(--branco);
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+/* =======================================================================
+   BARRA DE NAVEGAÇÃO — Menu abaixo do header
+   ======================================================================= */
+.site-nav {
+  display: flex;
+  justify-content: center;   /* Links centralizados */
+  gap: 32px;
+  background: var(--branco);
+  border-bottom: 2px solid var(--cinza-claro);
+  padding: 10px 24px;
+}
+.site-nav a {
+  color: var(--cinza-escuro);
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;  /* Letras maiúsculas */
+  letter-spacing: 0.5px;
+  padding: 4px 0;
+  border-bottom: 2px solid transparent; /* Borda invisível que aparece no hover */
+  transition: border-color var(--transicao), color var(--transicao);
+}
+.site-nav a:hover,
+.site-nav a.ativo {
+  color: var(--vermelho);
+  border-bottom-color: var(--vermelho); /* Linha vermelha embaixo */
+  text-decoration: none;
+}
+/* Link OUTLET em destaque vermelho */
+.site-nav a.outlet {
+  color: var(--vermelho);
+  font-weight: 900;
+}
+
+/* =======================================================================
+   RODAPÉ — Parte inferior do site
+   Grid: [atendimento] [aceitamos] [segurança]
+   ======================================================================= */
+.site-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* Três colunas iguais */
+  grid-template-areas: "atend aceita segur"; /* Nomeia cada coluna */
+  gap: 24px;
+  background: var(--cinza-claro);
+  border-top: 3px solid var(--vermelho);
+  padding: 32px 48px;
+  margin-top: 48px;
+}
+.footer-atendimento { grid-area: atend; }  /* Coluna 1 */
+.footer-aceitamos   { grid-area: aceita; } /* Coluna 2 */
+.footer-seguranca   { grid-area: segur; }  /* Coluna 3 */
+
+.site-footer h4 {
+  font-family: var(--fonte-titulo);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--cinza-medio);
+  margin-bottom: 12px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 6px;
+}
+.site-footer p,
+.site-footer a {
+  font-size: 13px;
+  color: var(--cinza-medio);
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* =======================================================================
+   BOTÕES REUTILIZÁVEIS
+   Classe base ".btn" + modificadores: .btn-verde, .btn-vermelho, etc.
+   ======================================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--fonte);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background var(--transicao), transform 0.1s;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+}
+.btn:hover  { transform: translateY(-2px); text-decoration: none; } /* Sobe levemente */
+.btn:active { transform: translateY(0); }                           /* Volta ao clicar */
+
+/* Botão verde (comprar) */
+.btn-verde       { background: var(--verde);  color: var(--branco); }
+.btn-verde:hover { background: var(--verde-escuro); color: var(--branco); }
+
+/* Botão vermelho (destaque) */
+.btn-vermelho       { background: var(--vermelho); color: var(--branco); }
+.btn-vermelho:hover { background: var(--vermelho-escuro); color: var(--branco); }
+
+/* Botão contorno (outline) */
+.btn-outline {
+  background: transparent;
+  color: var(--vermelho);
+  border: 2px solid var(--vermelho);
+}
+.btn-outline:hover { background: var(--vermelho); color: var(--branco); }
+
+/* Botão cinza (ações neutras) */
+.btn-cinza       { background: #e0e0e0; color: var(--cinza-escuro); }
+.btn-cinza:hover { background: #c8c8c8; }
+
+/* Botão preto */
+.btn-preto       { background: var(--preto); color: var(--branco); }
+.btn-preto:hover { background: #000; color: var(--branco); }
+
+/* Modificadores de tamanho */
+.btn-lg { padding: 13px 32px; font-size: 16px; } /* Grande */
+.btn-sm { padding: 6px 14px;  font-size: 12px; } /* Pequeno */
+
+/* =======================================================================
+   CONTAINER CENTRAL
+   Limita a largura máxima e centraliza o conteúdo
+   ======================================================================= */
+.container {
+  max-width: 1200px; /* Largura máxima */
+  margin: 0 auto;    /* Centraliza horizontalmente */
+  padding: 0 24px;   /* Espaçamento lateral */
+}
+
+/* =======================================================================
+   TÍTULO DE SEÇÃO
+   Ex: "Confira nossos Lançamentos" com linha vermelha embaixo
+   ======================================================================= */
+.titulo-secao {
+  text-align: center;
+  font-family: var(--fonte-titulo);
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--preto);
+  margin: 32px 0 20px;
+  position: relative;
+}
+/* Linha decorativa vermelha abaixo do título */
+.titulo-secao::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: var(--vermelho);
+  margin: 8px auto 0;
+  border-radius: 2px;
+}
+
+/* =======================================================================
+   CARD DE PRODUTO
+   Usado na home, catálogo — cada produto é um card
+   ======================================================================= */
+.produto-card {
+  background: var(--branco);
+  border: 1px solid #e8e8e8;
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column; /* Empilha os elementos verticalmente */
+  gap: 8px;
+  transition: box-shadow var(--transicao), transform var(--transicao);
+  position: relative;     /* Para posicionar as tags absolutas */
+  overflow: hidden;
+}
+.produto-card:hover {
+  box-shadow: 0 6px 24px rgba(0,0,0,0.14); /* Sombra ao passar o mouse */
+  transform: translateY(-4px);              /* Sobe levemente */
+}
+/* Imagem do produto dentro do card */
+.produto-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;   /* Mantém proporção sem cortar */
+  border-radius: var(--radius);
+  background: #f9f9f9;
+}
+.produto-card .nome {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cinza-escuro);
+  min-height: 36px;       /* Altura mínima para alinhar cards de tamanhos diferentes */
+  line-height: 1.3;
+}
+.produto-card .preco-antigo {
+  font-size: 12px;
+  color: var(--cinza-medio);
+  text-decoration: line-through; /* Texto riscado */
+}
+.produto-card .preco {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--preto);
+  font-family: var(--fonte-titulo);
+}
+.produto-card .preco-parcelado {
+  font-size: 11px;
+  color: var(--cinza-medio);
+}
+/* Tag "Novo" no canto superior esquerdo */
+.produto-card .tag-lancamento {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--vermelho);
+  color: var(--branco);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 3px;
+  z-index: 1;
+}
+/* Tag "X% OFF" no canto superior direito */
+.produto-card .tag-off {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--verde);
+  color: var(--branco);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 3px;
+  z-index: 1;
+}
+
+/* =======================================================================
+   BREADCRUMB — Trilha de navegação (Home > Catálogo > Produto)
+   ======================================================================= */
+.breadcrumb {
+  display: flex;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--cinza-medio);
+  padding: 12px 0;
+  align-items: center;
+  list-style: none; /* Remove marcadores de lista */
+  flex-wrap: wrap;
+}
+.breadcrumb a       { color: var(--cinza-medio); }
+.breadcrumb a:hover { color: var(--vermelho); }
+.breadcrumb span    { color: var(--cinza-escuro); font-weight: 600; }
+/* Separador "/" entre itens */
+.breadcrumb li + li::before {
+  content: '/';
+  margin: 0 6px;
+  color: #ccc;
+}
+
+/* =======================================================================
+   TABELA GERAL — Usada em Clientes e Pedidos
+   ======================================================================= */
+.tabela-wrapper {
+  overflow-x: auto;              /* Scroll horizontal em telas pequenas */
+  border-radius: var(--radius);
+  box-shadow: var(--sombra);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;    /* Remove bordas duplas */
+  background: var(--branco);
+}
+/* Cabeçalho da tabela em vermelho */
+table thead {
+  background: var(--vermelho);
+  color: var(--branco);
+}
+table thead th {
+  padding: 12px 16px;
+  text-align: left;
+  font-family: var(--fonte-titulo);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+/* Linhas do corpo da tabela */
+table tbody tr {
+  border-bottom: 1px solid #eee;
+  transition: background var(--transicao);
+}
+table tbody tr:hover { background: #fff5f5; } /* Hover rosa suave */
+table tbody td {
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--cinza-escuro);
+}
+
+/* Badges de status dos pedidos */
+.status {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.status-enviado     { background: #fff3cd; color: #856404; }
+.status-entregue    { background: #d1e7dd; color: #0a3622; }
+.status-pendente    { background: #f8d7da; color: #721c24; }
+.status-processando { background: #cfe2ff; color: #084298; }
+
+/* =======================================================================
+   PAINEL DO USUÁRIO — Layout sidebar + conteúdo principal
+   ======================================================================= */
+.painel-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr; /* Sidebar fixa | Conteúdo flexível */
+  grid-template-areas: "sidebar main"; /* Nomeia as áreas */
+  gap: 24px;
+  margin: 24px 0;
+  align-items: start; /* Alinha ao topo */
+}
+/* Sidebar vermelha */
+.painel-sidebar {
+  grid-area: sidebar;
+  background: var(--vermelho);
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: sticky; /* Sidebar fica fixa ao rolar */
+  top: 80px;        /* Fica abaixo do header fixo */
+}
+.painel-sidebar ul { list-style: none; }
+.painel-sidebar ul li a {
+  display: block;
+  padding: 13px 20px;
+  color: var(--branco);
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  transition: background var(--transicao);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.painel-sidebar ul li a:hover,
+.painel-sidebar ul li a.ativo {
+  background: rgba(0,0,0,0.25);
+  text-decoration: none;
+}
+/* Área de conteúdo principal do painel */
+.painel-main { grid-area: main; }
+
+/* =======================================================================
+   FORMULÁRIOS GENÉRICOS
+   ======================================================================= */
+.form-group {
+  display: flex;
+  flex-direction: column; /* Label em cima, input embaixo */
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.form-group label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cinza-escuro);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+/* Estilo unificado para todos os campos de input */
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 10px 14px;
+  border: 1.5px solid #ddd;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-family: var(--fonte);
+  outline: none;
+  transition: border-color var(--transicao);
+  background: var(--branco);
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--vermelho); /* Borda vermelha ao focar */
+  box-shadow: 0 0 0 3px rgba(204,0,0,0.08); /* Halo suave */
+}
+
+/* =======================================================================
+   CARD / CAIXA GENÉRICA
+   ======================================================================= */
+.card-box {
+  background: var(--branco);
+  border: 1px solid #e8e8e8;
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--sombra);
+}
+.card-box h3 {
+  font-family: var(--fonte-titulo);
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--preto);
+  margin-bottom: 16px;
+  border-bottom: 2px solid var(--cinza-claro);
+  padding-bottom: 10px;
+  text-transform: uppercase;
+}
+
+/* =======================================================================
+   ALERTAS / MENSAGENS DE SISTEMA
+   ======================================================================= */
+.alerta {
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.alerta-sucesso { background: #d1e7dd; color: #0a3622; border-left: 4px solid var(--verde); }
+.alerta-erro    { background: #f8d7da; color: #721c24; border-left: 4px solid var(--vermelho); }
+.alerta-info    { background: #cfe2ff; color: #084298; border-left: 4px solid #0d6efd; }
+.alerta-aviso   { background: #fff3cd; color: #664d03; border-left: 4px solid var(--amarelo); }
+
+/* =======================================================================
+   BOTÃO FLUTUANTE (canto inferior direito)
+   Aparece na home como atalho para o carrinho
+   ======================================================================= */
+.btn-flutuante {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 200;
+  background: var(--verde);
+  color: var(--branco);
+  padding: 13px 22px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background var(--transicao), transform var(--transicao);
+  text-decoration: none;
+}
+.btn-flutuante:hover {
+  background: var(--verde-escuro);
+  transform: scale(1.04);
+  color: var(--branco);
+  text-decoration: none;
+}
+.btn-flutuante .subtotal {
+  font-size: 12px;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+/* =======================================================================
+   CATEGORIA (ícone circular)
+   ======================================================================= */
+.secao-categorias {
+  padding: 32px 48px;
+  background: var(--branco);
+}
+.categorias-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 colunas por padrão */
+  gap: 16px;
+  justify-items: center;
+}
+.categoria-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.categoria-item:hover { text-decoration: none; }
+/* Círculo azul com emoji/ícone */
+.categoria-icone {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #1a5fa8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: var(--branco);
+  transition: background var(--transicao), transform var(--transicao);
+  box-shadow: 0 3px 10px rgba(26,95,168,0.3);
+}
+.categoria-item:hover .categoria-icone {
+  background: var(--vermelho); /* Vira vermelho no hover */
+  transform: scale(1.08);
+}
+.categoria-nome {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--cinza-escuro);
+  text-align: center;
+}
+
+/* =======================================================================
+   GRADE DE PRODUTOS (grid de cards)
+   ======================================================================= */
+.secao-produtos {
+  padding: 0 48px 48px;
+}
+.produtos-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 colunas */
+  gap: 20px;
+}
+
+/* =======================================================================
+   PAGINAÇÃO
+   ======================================================================= */
+.paginacao {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 32px;
+}
+.paginacao a {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #ddd;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cinza-escuro);
+  transition: all var(--transicao);
+}
+.paginacao a:hover,
+.paginacao a.ativo {
+  background: var(--vermelho);
+  border-color: var(--vermelho);
+  color: var(--branco);
+  text-decoration: none;
+}
