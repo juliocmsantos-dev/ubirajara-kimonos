@@ -1,6 +1,6 @@
 # <img src="img/homer1.png" width="60" align="left" style="margin-right:16px;border-radius:50%;"> Ubirajara Kimonos
 
-> *"Senhor da Lança"* — E-commerce de Artes Marciais desenvolvido como projeto acadêmico
+> *"Ubirajara - "Senhor da lança"* — E-commerce de Artes Marciais desenvolvido como projeto acadêmico
 
 <br>
 
@@ -165,7 +165,7 @@ O projeto utiliza **CSS Grid** como sistema de layout principal em todas as pág
 
 ---
 
-## 📋 Páginas Obrigatórias (Requisitos do Professor)
+## 📋 Páginas Obrigatórias (Requisitos)
 
 | Requisito | Página | Status |
 |---|---|---|
